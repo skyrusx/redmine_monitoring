@@ -1,0 +1,13 @@
+# Ignore temporary and log files
+*.log
+tmp/
+.bundle/
+vendor/bundle/
+
+# Ignore IDE specific files
+.DS_Store
+.idea/
+*.swp
+
+# Ignore sensitive configuration if applicable
+config/database.yml
