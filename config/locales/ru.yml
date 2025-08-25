@@ -6,6 +6,9 @@ ru:
     fields:
       label_enabled: "Включить мониторинг"
       label_dev_mode: "Режим разработки"
+      label_max_errors: "Максимум записей"
+
+      label_max_errors_hint: "Ограничивает размер таблицы, старые записи будут удаляться."
 
   notices:
     test_error: "Тестовая ошибка успешно создана"

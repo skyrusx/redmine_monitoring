@@ -6,6 +6,9 @@ en:
     fields:
       label_enabled: "Enable monitoring"
       label_dev_mode: "Development mode"
+      label_max_errors: "Max errors"
+
+      label_max_errors_hint: "Limits the size of the table, old records will be deleted."
 
   notices:
     test_error: "Test error created successfully"
