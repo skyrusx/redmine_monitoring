@@ -8,7 +8,8 @@ Redmine::Plugin.register :redmine_monitoring do
 
   settings partial: 'settings/monitoring_settings', default: {
     enabled: true,
-    dev_mode: false
+    dev_mode: false,
+    max_errors: 10_000
   }
 end
 
