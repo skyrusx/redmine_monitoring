@@ -1,0 +1,119 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_monitoring', plugin: 'redmine_monitoring' %>
+  <%= javascript_include_tag 'redmine_monitoring', plugin: 'redmine_monitoring' %>
+<% end %>
+
+<h2 class="mm-title"><%= page_title(l(:label_monitoring), l(:label_list_errors)) %></h2>
+
+<div class="mm-actions">
+  <% if Setting.plugin_redmine_monitoring['dev_mode'] %>
+    <%= link_to l(:label_add_test_error), monitoring_test_error_path, class: 'mm-btn mm-btn--primary' %>
+  <% end %>
+  <%= button_to l(:label_clear), monitoring_clear_path,
+                method: :post,
+                data: { confirm: l("notices.confirm") },
+                class: 'mm-btn mm-btn--danger' %>
+</div>
+
+<p class="mm-subtitle"><i><%= l(:label_hint) %></i></p>
+
+<div class="mm-card">
+  <table class="mm-table">
+    <thead>
+      <tr>
+        <th class="mm-col-collapse"></th>
+        <th><%= l(:label_date) %></th>
+        <th><%= l(:label_endpoint) %></th>
+        <th><%= l(:label_error_class) %></th>
+        <th><%= l(:label_message) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @errors.each_with_index do |error, index| %>
+        <tr class="mm-row error-row" data-target="details-<%= index %>">
+          <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
+          <td><%= error.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td><span class="mm-mono"><%= endpoint(error) %></span></td>
+          <td><span class="mm-badge"><%= error_class(error) %></span></td>
+          <td class="mm-ellipsis" title="<%= error.message %>"><%= truncate(error.message, length: 80) %></td>
+        </tr>
+
+        <tr id="details-<%= index %>" class="details-row" style="display:none;">
+          <td colspan="5">
+            <div class="mm-details">
+              <div class="mm-kv"><span><%= l(:label_message) %></span><code><%= error.message %></code></div>
+              <div class="mm-kv"><span><%= l(:label_location) %></span><code><%= location(error) %></code></div>
+              <div class="mm-kv"><span><%= l(:label_user) %></span><code><%= user_info(error.user) %></code></div>
+              <div class="mm-kv"><span><%= l(:label_ip_address) %></span><code><%= error.ip_address %></code></div>
+              <div class="mm-kv"><span><%= l(:label_format) %></span><code><%= error.format %></code></div>
+              <div class="mm-kv"><span><%= l(:label_status) %></span><code><%= error.status_code %></code></div>
+              <div class="mm-kv"><span><%= l(:label_env) %></span><code><%= error.env %></code></div>
+
+              <div class="mm-block">
+                <div class="mm-block__title"><%= l(:label_backtrace) %></div>
+                <div class="mm-code">
+                  <div class="mm-code__header">
+                    <span><%= l(:label_code) %></span>
+                    <button class="mm-copy-btn" data-target="backtrace-<%= index %>">
+                      <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                      <%= l(:label_copy) %>
+                    </button>
+                  </div>
+                  <div class="mm-code__body">
+                    <pre id="backtrace-<%= index %>"><code><%= error.backtrace %></code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mm-block">
+                <div class="mm-block__title"><%= l(:label_params) %></div>
+                <div class="mm-code">
+                  <div class="mm-code__header">
+                    <span><%= l(:label_code) %></span>
+                    <button class="mm-copy-btn" data-target="params-<%= index %>">
+                      <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                      <%= l(:label_copy) %>
+                    </button>
+                  </div>
+                  <div class="mm-code__body">
+                    <pre id="params-<%= index %>"><code><%= pretty_json(error.params) %></code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mm-block">
+                <div class="mm-block__title"><%= l(:label_headers) %></div>
+                <div class="mm-code">
+                  <div class="mm-code__header">
+                    <span><%= l(:label_code) %></span>
+                    <button class="mm-copy-btn" data-target="headers-<%= index %>">
+                      <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                      <%= l(:label_copy) %>
+                    </button>
+                  </div>
+                  <div class="mm-code__body">
+                    <pre id="params-<%= index %>"><code><%= pretty_json(error.headers) %></code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="mm-pagination">
+  <div class="mm-pagination-links">
+    <%= pagination_links_full @paginator, @count %>
+  </div>
+
+  <div class="mm-pagination-perpage">
+    <span><%= l(:label_per_page) %></span>
+    <% Setting.per_page_options_array.each do |per_page| %>
+      <% link = url_for(params.permit!.to_h.merge(per_page: per_page, page: 1)) %>
+      <%= link_to per_page, link, class: "mm-page-size #{'is-active' if @limit == per_page}" %>
+    <% end %>
+  </div>
+</div>
