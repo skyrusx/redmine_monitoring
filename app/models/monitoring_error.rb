@@ -7,6 +7,21 @@ class MonitoringError < ActiveRecord::Base
   after_commit :enforce_max_errors, :enforce_retention, on: :create
 
   scope :latest_order, -> { order(created_at: :desc, id: :desc) }
+  scope :by_error_class, ->(value) { where(error_class: value) if value.present? }
+  scope :by_controller_name, ->(value) { where(controller_name: value) if value.present? }
+  scope :by_action_name, ->(value) { where(action_name: value) if value.present? }
+  scope :by_user, ->(value) { where(user_id: value) if value.present? }
+  scope :by_status, ->(value) { where(status_code: value) if value.present? }
+  scope :by_format, ->(value) { where(format: value) if value.present? }
+  scope :by_env, ->(value) { where(env: value) if value.present? }
+  scope :by_message, ->(value) do
+    if value.present?
+      adapter = connection.adapter_name
+      adapter =~ /PostgreSQL/i ? where("message ILIKE ?", "%#{value}%") : where("message LIKE ?", "%#{value}%")
+    end
+  end
+  scope :created_from, ->(date) { where("created_at >= ?", date.to_date.beginning_of_day) if date.present? }
+  scope :created_to, ->(date) { where("created_at <= ?", date.to_date.end_of_day) if date.present? }
 
   USEFUL_HEADERS = %w[HTTP_USER_AGENT HTTP_REFERER HTTP_ACCEPT HTTP_ACCEPT_LANGUAGE HTTP_X_REQUESTED_WITH].freeze
 
@@ -65,6 +80,19 @@ class MonitoringError < ActiveRecord::Base
       deleted = scope.limit(batch_size).delete_all
       break if deleted < batch_size
     end
+  end
+
+  def self.filter(params)
+    all.by_error_class(params[:error_class])
+       .by_controller_name(params[:controller_name])
+       .by_action_name(params[:action_name])
+       .by_user(params[:user_id])
+       .by_status(params[:status_code])
+       .by_format(params[:format])
+       .by_env(params[:env])
+       .by_message(params[:message])
+       .created_from(params[:created_at_from])
+       .created_to(params[:created_at_to])
   end
 
   private

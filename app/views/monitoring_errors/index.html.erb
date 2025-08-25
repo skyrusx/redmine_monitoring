@@ -9,10 +9,16 @@
   <% if Setting.plugin_redmine_monitoring['dev_mode'] %>
     <%= link_to l(:label_add_test_error), monitoring_test_error_path, class: 'mm-btn mm-btn--primary' %>
   <% end %>
-  <%= button_to l(:label_clear), monitoring_clear_path,
+  <%= button_to l(:label_delete_errors), monitoring_clear_path,
                 method: :post,
                 data: { confirm: l("notices.confirm") },
                 class: 'mm-btn mm-btn--danger' %>
+</div>
+
+<div class="filters">
+  <%= form_with url: monitoring_errors_path, method: :get, local: true do |f| %>
+    <%= render partial: 'filters', locals: { f: f } %>
+  <% end %>
 </div>
 
 <p class="mm-subtitle"><i><%= l(:label_hint) %></i></p>

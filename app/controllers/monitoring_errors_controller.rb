@@ -3,13 +3,21 @@ class MonitoringErrorsController < ApplicationController
   before_action :check_monitoring_enabled
 
   def index
-    scope = MonitoringError.order(created_at: :desc)
+    scope = MonitoringError.filter(params)
 
     @limit = per_page_param
     @count = scope.count
-
     @paginator = Redmine::Pagination::Paginator.new(@count, @limit, params[:page])
-    @errors = scope.offset(@paginator.offset).limit(@paginator.per_page)
+    @offset = @paginator.offset
+    @errors = scope.order(created_at: :desc).offset(@offset).limit(@paginator.per_page)
+
+    @error_classes = MonitoringError.distinct.pluck(:error_class).compact.sort
+    @controller_names = MonitoringError.distinct.pluck(:controller_name).compact.sort
+    @action_names = MonitoringError.distinct.pluck(:action_name).compact.sort
+    @status_codes = MonitoringError.distinct.pluck(:status_code).compact.sort
+    @formats = MonitoringError.distinct.pluck(:format).compact.sort
+    @envs = MonitoringError.distinct.pluck(:env).compact.sort
+    @users = User.where(id: MonitoringError.distinct.pluck(:user_id).compact)
   end
 
   def show
