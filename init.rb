@@ -5,4 +5,9 @@ Redmine::Plugin.register :redmine_monitoring do
   version '0.0.1'
   url 'https://github.com/skyrusx/redmine_monitoring'
   author_url 'https://github.com/skyrusx/'
+
+  settings partial: 'settings/monitoring_settings', default: {
+    enabled: true,
+    dev_mode: false
+  }
 end

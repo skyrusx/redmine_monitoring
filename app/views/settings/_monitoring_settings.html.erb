@@ -1,0 +1,14 @@
+<div class="settings-redmine-monitoring">
+  <fieldset>
+    <legend><%= l("settings.label_title") %></legend>
+
+    <p>
+      <%= label_tag 'settings_enabled', l("settings.fields.label_enabled") %>
+      <%= check_box_tag 'settings[enabled]', true, @settings[:enabled] %>
+    </p>
+    <p>
+      <%= label_tag 'settings_dev_mode', l("settings.fields.label_dev_mode") %>
+      <%= check_box_tag 'settings[dev_mode]', false, @settings[:dev_mode] %>
+    </p>
+  </fieldset>
+</div>
