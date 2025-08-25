@@ -1,3 +1,37 @@
 # Russian strings go here for Rails i18n
 ru:
-  # example: "Пример"
+  settings:
+    label_title: "Настройки Redmine Monitoring"
+
+    fields:
+      label_enabled: "Включить мониторинг"
+      label_dev_mode: "Режим разработки"
+
+  notices:
+    test_error: "Тестовая ошибка успешно создана"
+    clear: "Все ошибки успешно удалены"
+    check_monitoring_enabled: "Мониторинг отключен"
+    confirm: "Вы уверены, что хотите удалить все ошибки?"
+
+  label_monitoring: "Мониторинг"
+  label_list_errors: "Список ошибок"
+
+  label_add_test_error: "Создать тестовую ошибку"
+  label_clear: "Очистить"
+  label_hint: "Кликните на строку ошибки, чтобы увидеть подробную информацию."
+  label_date: "Дата"
+  label_endpoint: "Controller#action"
+  label_error_class: "Класс ошибки"
+  label_message: "Сообщение"
+  label_location: "Файл / строка"
+  label_user: "Пользователь"
+  label_ip_address: "IP-адрес"
+  label_format: "Формат"
+  label_status: "Статус"
+  label_env: "Окружение"
+  label_backtrace: "Backtrace"
+  label_params: "Params"
+  label_headers: "Headers"
+  label_code: "Код"
+  label_copy: "Копировать"
+  label_per_page: "На страницу:"

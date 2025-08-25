@@ -1,3 +1,37 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  settings:
+    label_title: "Redmine Monitoring Settings"
+
+    fields:
+      label_enabled: "Enable monitoring"
+      label_dev_mode: "Development mode"
+
+  notices:
+    test_error: "Test error created successfully"
+    clear: "All errors have been deleted"
+    check_monitoring_enabled: "Monitoring is disabled"
+    confirm: "Are you sure you want to delete all errors?"
+
+  label_monitoring: "Monitoring"
+  label_list_errors: "Error list"
+
+  label_add_test_error: "Create test error"
+  label_clear: "Clear"
+  label_hint: "Click on the error row to view detailed information."
+  label_date: "Date"
+  label_endpoint: "Controller#action"
+  label_error_class: "Error class"
+  label_message: "Message"
+  label_location: "File / Line"
+  label_user: "User"
+  label_ip_address: "IP address"
+  label_format: "Format"
+  label_status: "Status"
+  label_env: "Environment"
+  label_backtrace: "Backtrace"
+  label_params: "Params"
+  label_headers: "Headers"
+  label_code: "Code"
+  label_copy: "Copy"
+  label_per_page: "Per page:"
