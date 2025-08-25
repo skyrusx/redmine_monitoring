@@ -56,9 +56,11 @@ class MonitoringError < ActiveRecord::Base
 
   def enforce_retention(batch_size: 1000)
     days = self.retention_days
-    cutoff_date = Time.current - days.days
+    return if days <= 0
 
+    cutoff_date = Time.current - days.days
     scope = self.where(arel_table[:created_at].lt(cutoff_date))
+
     loop do
       deleted = scope.limit(batch_size).delete_all
       break if deleted < batch_size
