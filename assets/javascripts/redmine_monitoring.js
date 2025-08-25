@@ -28,4 +28,12 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
+
+    $('.monitoring-select2').select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: function() {
+            return $(this).data('placeholder') || 'Выберите...';
+        }
+    });
 });

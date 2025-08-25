@@ -28,12 +28,21 @@
 }
 
 .mm-btn--primary {
-  background: #2563eb;
+  background: #2563eb !important;
   color: #fff !important;
 }
 
 .mm-btn--primary:hover {
-  background: #1d4ed8;
+  background: #1d4ed8 !important;
+}
+
+.mm-btn--secondary {
+  background: #6c757d !important;
+  color: #fff !important;
+}
+
+.mm-btn--secondary:hover {
+  background: #5c636a !important;
 }
 
 .mm-btn--danger {
@@ -334,4 +343,42 @@
 
 .mm-pagination-links .per-page {
   display: none;
+}
+
+.filters {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.filters .mm-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-end;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.filters .mm-row:last-child {
+  justify-content: space-between;
+  margin-bottom: unset;
+}
+
+.filters .mm-row .mm-field {
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.filters .mm-row .mm-field select {
+  width: 100%;
+}
+
+.filters .monitoring-textarea {
+  width: 100%;
+  resize: vertical;
+  padding: 10px;
+  box-sizing: border-box;
 }
