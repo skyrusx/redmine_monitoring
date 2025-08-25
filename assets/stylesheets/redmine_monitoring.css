@@ -263,16 +263,21 @@
 }
 
 .mm-pagination-links ul.pages li.previous span,
+.mm-pagination-links ul.pages li.next span,
+.mm-pagination-links ul.pages li.previous a,
 .mm-pagination-links ul.pages li.next a {
   color: #6b7280;
   font-size: 0.85rem;
 }
 
 .mm-pagination-links ul.pages li.previous span,
+.mm-pagination-links ul.pages li.next span,
+.mm-pagination-links ul.pages li.previous a,
 .mm-pagination-links ul.pages li.next a {
   border: 1px solid #e5e7eb;
 }
 
+.mm-pagination-links ul.pages li.previous a:hover,
 .mm-pagination-links ul.pages li.next a:hover {
   background: #f3f4f6;
   color: #111827;
@@ -325,4 +330,8 @@
 .mm-pagination-links .items {
   color: #6b7280;
   font-size: 0.85rem;
+}
+
+.mm-pagination-links .per-page {
+  display: none;
 }

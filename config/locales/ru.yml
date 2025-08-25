@@ -7,8 +7,9 @@ ru:
       label_enabled: "Включить мониторинг"
       label_dev_mode: "Режим разработки"
       label_max_errors: "Максимум записей"
-
       label_max_errors_hint: "Ограничивает размер таблицы, старые записи будут удаляться."
+      label_retention_days: "Срок хранения (дней)"
+      label_retention_days_hint: "Удаляет ошибки старше указанного количества дней."
 
   notices:
     test_error: "Тестовая ошибка успешно создана"

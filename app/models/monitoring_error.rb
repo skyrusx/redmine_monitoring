@@ -4,7 +4,7 @@ class MonitoringError < ActiveRecord::Base
   validates :error_class, presence: true
   validates :message, presence: true
 
-  after_commit :enforce_max_errors, on: :create
+  after_commit :enforce_max_errors, :enforce_retention, on: :create
 
   scope :latest_order, -> { order(created_at: :desc, id: :desc) }
 
@@ -41,6 +41,27 @@ class MonitoringError < ActiveRecord::Base
     when :simple then enforce_with_simple_batch
     when :advisory then enforce_with_advisory_lock
     else enforce_with_boundary
+    end
+  end
+
+  def self.retention_days
+    plugin_settings = Setting.respond_to?(:plugin_redmine_monitoring) ? Setting.plugin_redmine_monitoring : {}
+    configured_value = plugin_settings && plugin_settings['retention_days']
+
+    value = configured_value.to_i
+    value.positive? ? value : 90
+  rescue
+    90
+  end
+
+  def enforce_retention(batch_size: 1000)
+    days = self.retention_days
+    cutoff_date = Time.current - days.days
+
+    scope = self.where(arel_table[:created_at].lt(cutoff_date))
+    loop do
+      deleted = scope.limit(batch_size).delete_all
+      break if deleted < batch_size
     end
   end
 

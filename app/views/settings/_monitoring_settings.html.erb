@@ -19,5 +19,10 @@
       <%= number_field_tag 'settings[max_errors]', @settings[:max_errors] || 10_000, min: 100, max: 1_000_000, step: 100 %>
       <em class="info"><%= l("settings.fields.label_max_errors_hint") %></em>
     </p>
+    <p>
+      <%= label_tag 'settings_max_errors', l("settings.fields.label_retention_days") %>
+      <%= number_field_tag 'settings[retention_days]', @settings[:retention_days] || 90, min: 1, step: 1 %>
+      <em class="info"><%= l("settings.fields.label_retention_days_hint") %></em>
+    </p>
   </fieldset>
 </div>
