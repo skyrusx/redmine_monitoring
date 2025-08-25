@@ -11,3 +11,5 @@ Redmine::Plugin.register :redmine_monitoring do
     dev_mode: false
   }
 end
+
+Rails.application.config.middleware.use RedmineMonitoring::Middleware
