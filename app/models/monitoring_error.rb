@@ -12,7 +12,7 @@ class MonitoringError < ActiveRecord::Base
   scope :by_action_name, ->(value) { where(action_name: value) if value.present? }
   scope :by_user, ->(value) { where(user_id: value) if value.present? }
   scope :by_status, ->(value) { where(status_code: value) if value.present? }
-  scope :by_format, ->(value) { where(format: value) if value.present? }
+  scope :by_error_format, ->(value) { where(format: value) if value.present? }
   scope :by_env, ->(value) { where(env: value) if value.present? }
   scope :by_message, ->(value) do
     if value.present?
@@ -88,7 +88,7 @@ class MonitoringError < ActiveRecord::Base
        .by_action_name(params[:action_name])
        .by_user(params[:user_id])
        .by_status(params[:status_code])
-       .by_format(params[:format])
+       .by_error_format(params[:error_format])
        .by_env(params[:env])
        .by_message(params[:message])
        .created_from(params[:created_at_from])
