@@ -27,4 +27,16 @@ module MonitoringErrorsHelper
   rescue JSON::ParserError, TypeError
     raw.presence || fallback
   end
+
+  def monitoring_export_links
+    formats = { csv: :label_export_csv, pdf: :label_export_pdf }
+
+    content_tag(:div, class: "mm-export") do
+      links = formats.map do |format, label|
+        link_to l(label), monitoring_errors_path(format: format), class: "mm-btn"
+      end
+
+      safe_join([content_tag(:span, l(:label_export_to), class: "mm-export-label"), safe_join(links, " | ")], " ")
+    end
+  end
 end

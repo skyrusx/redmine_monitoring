@@ -18,6 +18,12 @@ class MonitoringErrorsController < ApplicationController
     @formats = MonitoringError.distinct.pluck(:format).compact.sort
     @envs = MonitoringError.distinct.pluck(:env).compact.sort
     @users = User.where(id: MonitoringError.distinct.pluck(:user_id).compact)
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data MonitoringErrors::Export.new(scope).to_csv, filename: "monitoring_errors-#{Date.today}.csv" }
+      format.pdf { send_data MonitoringErrors::Export.new(scope).to_pdf, filename: "monitoring_errors-#{Date.today}.pdf", type: "application/pdf" }
+    end
   end
 
   def show
