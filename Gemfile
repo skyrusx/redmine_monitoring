@@ -1,3 +1,4 @@
 gem 'progress_bar'
 gem 'select2-rails'
 gem 'prawn'
+gem 'caxlsx'
