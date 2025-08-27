@@ -10,7 +10,8 @@ Redmine::Plugin.register :redmine_monitoring do
     enabled: true,
     dev_mode: false,
     max_errors: 10_000,
-    retention_days: 90
+    retention_days: 90,
+    log_levels: %w[fatal error warning info]
   }
 end
 

@@ -1,5 +1,6 @@
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'redmine_monitoring_settings', plugin: 'redmine_monitoring' %>
+  <%= javascript_include_tag 'redmine_monitoring_settings', plugin: 'redmine_monitoring' %>
 <% end %>
 
 <div class="settings-redmine-monitoring">
@@ -23,6 +24,14 @@
       <%= label_tag 'settings_max_errors', l("settings.fields.label_retention_days") %>
       <%= number_field_tag 'settings[retention_days]', @settings[:retention_days] || 90, min: 1, step: 1 %>
       <em class="info"><%= l("settings.fields.label_retention_days_hint") %></em>
+    </p>
+    <p>
+      <%= label_tag 'settings_log_levels', l("settings.fields.label_log_levels") %>
+      <% options = MonitoringError::SEVERITIES.map { |severity| [severity.titleize, severity] } %>
+      <%= select_tag 'settings[log_levels][]',
+                     options_for_select(options, @settings[:log_levels]),
+                     multiple: true, size: 3, class: 'monitoring-select2', data: { placeholder: l(:label_select_log_levels) } %>
+      <em class="info"><%= l("settings.fields.label_log_levels_hint") %></em>
     </p>
   </fieldset>
 </div>

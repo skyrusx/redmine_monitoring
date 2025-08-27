@@ -11,3 +11,7 @@ input[type="number"] {
   border: 1px solid #e0e2e3;
   min-width: 50%;
 }
+
+.monitoring-select2 {
+  min-width: 52%;
+}
