@@ -10,6 +10,8 @@ ru:
       label_max_errors_hint: "Ограничивает размер таблицы, старые записи будут удаляться."
       label_retention_days: "Срок хранения (дней)"
       label_retention_days_hint: "Удаляет ошибки старше указанного количества дней."
+      label_log_levels: "Уровни ошибок"
+      label_log_levels_hint: "Сохранять только выбранные уровни."
 
   notices:
     test_error: "Тестовая ошибка успешно создана"
@@ -56,6 +58,7 @@ ru:
   label_export_csv: "CSV"
   label_export_json: "JSON"
   label_export_pdf: "PDF"
+  label_export_xlsx: "XLSX"
 
   label_select_error_class: "-- Выберите класс ошибки --"
   label_select_status_code: "-- Выберите статус --"
@@ -65,6 +68,8 @@ ru:
   label_select_controller_name: "-- Выберите контроллер --"
   label_select_action_name: "-- Выберите действие --"
   label_select_message: "Поиск по сообщениям..."
+  label_select_log_levels: "-- Выберите уровни --"
+  label_select_severity: "-- Выберите уровень --"
 
   label_pdf_title: "Мониторинг. Список ошибок"
   label_pdf_section_main: "Основная информация"

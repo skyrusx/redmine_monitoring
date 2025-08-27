@@ -10,6 +10,8 @@ en:
       label_max_errors_hint: "Limits the table size, older records will be deleted."
       label_retention_days: "Retention period (days)"
       label_retention_days_hint: "Deletes errors older than the specified number of days."
+      label_log_levels: "Log levels"
+      label_log_levels_hint: "Store only selected levels (fatal, error, warning)."
 
   notices:
     test_error: "Test error created successfully"
@@ -56,6 +58,7 @@ en:
   label_export_csv: "CSV"
   label_export_json: "JSON"
   label_export_pdf: "PDF"
+  label_export_xlsx: "XLSX"
 
   label_select_error_class: "-- Select error class --"
   label_select_status_code: "-- Select status --"
@@ -65,6 +68,8 @@ en:
   label_select_controller_name: "-- Select controller --"
   label_select_action_name: "-- Select action --"
   label_select_message: "Search in messages..."
+  label_select_log_levels: "-- Select levels --"
+  label_select_severity: "-- Select severity --"
 
   label_pdf_title: "Monitoring. Error list"
   label_pdf_section_main: "Main info"
