@@ -1,5 +1,7 @@
 module RedmineMonitoring
   class Middleware
+    include RedmineMonitoring::Constants
+
     def initialize(app)
       @app = app
     end
@@ -16,6 +18,8 @@ module RedmineMonitoring
       severity = MonitoringError.severity_for(status, true)
       log_exception(e, env)
       save_error_to_db(exception: e, env: env, severity: severity)
+
+      raise
     end
 
     private
@@ -33,15 +37,16 @@ module RedmineMonitoring
     end
 
     def save_error_to_db(exception: nil, status: nil, env: , severity: "fatal")
-      return unless MonitoringError.allow_severity?(severity)
-
       request = ActionDispatch::Request.new(env)
       controller_instance = env['action_controller.instance']
+
+      return unless MonitoringError.allow_severity?(severity)
+      return unless MonitoringError.allow_format?(safe_format(request))
 
       error_params = {
         exception_class: exception_class(exception, status),
         error_class: exception ? exception.class.to_s : "HTTP #{status}",
-        message: exception ? exception.message.to_s : ([status, MonitoringError::HTTP_STATUS_TEXT[status]].join(" ") rescue "Error #{status}"),
+        message: exception ? exception.message.to_s : ([status, HTTP_STATUS_TEXT[status]].join(" ") rescue "Error #{status}"),
         backtrace: exception ? Array(exception.backtrace).join("\n") : "",
         status_code: exception ? 500 : status,
         controller_name: controller_instance&.class&.name || request.params['controller'],
@@ -74,7 +79,7 @@ module RedmineMonitoring
     end
 
     def filtered_headers(request)
-      raw = request.headers.env.slice(*MonitoringError::USEFUL_HEADERS)
+      raw = request.headers.env.slice(*USEFUL_HEADERS)
       raw.transform_values { |value| value.is_a?(String) ? value : value.to_s }
     end
 
