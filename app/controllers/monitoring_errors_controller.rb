@@ -1,4 +1,6 @@
 class MonitoringErrorsController < ApplicationController
+  accept_api_auth :index
+
   before_action :require_admin
   before_action :check_monitoring_enabled
 
@@ -23,7 +25,9 @@ class MonitoringErrorsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { send_data MonitoringErrors::Export.new(scope).to_csv, filename: "monitoring_errors-#{Date.today}.csv" }
+      format.json { send_data MonitoringErrors::Export.new(scope).to_json, filename: "monitoring_errors-#{Date.today}.json", type: "application/json" }
       format.pdf { send_data MonitoringErrors::Export.new(scope).to_pdf, filename: "monitoring_errors-#{Date.today}.pdf", type: "application/pdf" }
+      format.xlsx { send_data MonitoringErrors::Export.new(scope).to_xlsx, filename: "monitoring_errors-#{Date.today}.xlsx" }
     end
   end
 

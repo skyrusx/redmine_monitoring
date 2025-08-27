@@ -1,4 +1,5 @@
 require 'prawn'
+require 'axlsx'
 
 class MonitoringErrors::Export
   def initialize(errors, batch_size: 1000, locale: :ru)
@@ -82,5 +83,39 @@ class MonitoringErrors::Export
         end
       end
     end.render
+  end
+
+  def to_xlsx
+    package = Axlsx::Package.new
+    workbook = package.workbook
+
+    workbook.add_worksheet(name: "Monitoring Errors") do |sheet|
+      styles = workbook.styles
+      header_style = styles.add_style(b: true, alignment: { horizontal: :center })
+      cell_style = styles.add_style(alignment: { horizontal: :left, vertical: :top })
+      datetime_style = styles.add_style(format_code: 'yyyy-mm-dd hh:mm:ss')
+
+      date_cols = %w[created_at updated_at]
+
+      headers = @attributes.map { |a| I18n.t("label_#{a}", locale: @locale, default: a.to_s.humanize) }
+      sheet.add_row headers, style: header_style
+
+      column_styles = @attributes.map { |attr| date_cols.include?(attr) ? datetime_style : cell_style }
+      users = User.where(id: @errors.where.not(user_id: nil).select(:user_id).distinct).pluck(:id, :login).to_h
+
+      @errors.find_in_batches(batch_size: @batch_size) do |batch|
+        batch.each do |row|
+          values = @attributes.map { |attr| attr == 'user_id' ? (users[row.user_id] || row.user_id) : row.public_send(attr) }
+          sheet.add_row values, style: column_styles
+        end
+      end
+
+      sheet.auto_filter = "A1:#{Axlsx::col_ref(@attributes.size - 1)}1"
+      sheet.sheet_view.show_grid_lines = false
+    end
+
+    data = package.to_stream.read
+    data.force_encoding(Encoding::BINARY)
+    data
   end
 end
