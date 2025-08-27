@@ -28,7 +28,7 @@
     <thead>
       <tr>
         <th class="mm-col-collapse"></th>
-        <th><%= l(:label_date) %></th>
+        <th class="mm-col-short"><%= l(:label_date) %></th>
         <th><%= l(:label_endpoint) %></th>
         <th class="mm-col-short"><%= l(:label_error_class) %></th>
         <th class="mm-col-short"><%= l(:label_severity) %></th>
@@ -39,7 +39,7 @@
       <% @errors.each_with_index do |error, index| %>
         <tr class="mm-row error-row" data-target="details-<%= index %>">
           <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
-          <td><%= error.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td class="mm-col-short"><%= error.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
           <td><span class="mm-mono"><%= endpoint(error) %></span></td>
           <td class="mm-col-short"><span class="mm-badge"><%= error_class(error) %></span></td>
           <td class="mm-col-short"><span class="mm-badge mm-badge__<%= error.severity %>"><%= error.severity.titleize %></span></td>

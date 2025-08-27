@@ -27,11 +27,19 @@
     </p>
     <p>
       <%= label_tag 'settings_log_levels', l("settings.fields.label_log_levels") %>
-      <% options = MonitoringError::SEVERITIES.map { |severity| [severity.titleize, severity] } %>
+      <% options = RedmineMonitoring::Constants::SEVERITIES.map { |severity| [severity.titleize, severity] } %>
       <%= select_tag 'settings[log_levels][]',
                      options_for_select(options, @settings[:log_levels]),
                      multiple: true, size: 3, class: 'monitoring-select2', data: { placeholder: l(:label_select_log_levels) } %>
       <em class="info"><%= l("settings.fields.label_log_levels_hint") %></em>
+    </p>
+    <p>
+      <%= label_tag 'settings_enabled_formats', l("settings.fields.label_enabled_formats") %>
+      <% formats = RedmineMonitoring::Constants::ENABLED_FORMATS %>
+      <%= select_tag 'settings[enabled_formats][]',
+                     options_for_select(formats, @settings[:enabled_formats]),
+                     multiple: true, size: 6, class: 'monitoring-select2', data: { placeholder: l(:label_select_enabled_formats) } %>
+      <em class="info"><%= l("settings.fields.label_enabled_formats_hint") %></em>
     </p>
   </fieldset>
 </div>
