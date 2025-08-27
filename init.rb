@@ -1,3 +1,5 @@
+require_relative 'lib/redmine_monitoring/constants'
+
 Redmine::Plugin.register :redmine_monitoring do
   name 'Redmine Monitoring plugin'
   author 'Ruslan Fedotov'
