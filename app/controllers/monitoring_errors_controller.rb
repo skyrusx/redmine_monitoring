@@ -1,4 +1,6 @@
 class MonitoringErrorsController < ApplicationController
+  include RedmineMonitoring::Constants
+
   accept_api_auth :index
 
   before_action :require_admin
@@ -36,6 +38,12 @@ class MonitoringErrorsController < ApplicationController
   end
 
   def test_error
+    format = safe_format(request)
+    severity = MonitoringError.severity_for(nil, RuntimeError.new("test"))
+
+    return redirect_to monitoring_errors_path unless MonitoringError.allow_severity?(severity)
+    return redirect_to monitoring_errors_path unless MonitoringError.allow_format?(format)
+
     MonitoringError.create!(
       exception_class: "TestError",
       error_class: "TestError",
@@ -44,7 +52,7 @@ class MonitoringErrorsController < ApplicationController
       status_code: 500,
       controller_name: "MonitoringErrorsController",
       action_name: "test_error",
-      format: safe_format(request),
+      format: format,
       file: __FILE__,
       line: __LINE__,
       user_id: User.current&.id,
@@ -54,7 +62,7 @@ class MonitoringErrorsController < ApplicationController
       params: safe_params(request.params).to_json,
       headers: filtered_headers.to_json,
       env: Rails.env,
-      severity: 'fatal'
+      severity: severity
     )
 
     redirect_to monitoring_errors_path, notice: I18n.t("notices.test_error")
@@ -94,7 +102,7 @@ class MonitoringErrorsController < ApplicationController
   end
 
   def filtered_headers
-    raw = request.headers.env.slice(*MonitoringError::USEFUL_HEADERS)
+    raw = request.headers.env.slice(*USEFUL_HEADERS)
     raw.transform_values { |value| value.is_a?(String) ? value : value.to_s }
   end
 end
