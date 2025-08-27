@@ -1,7 +1,7 @@
 require 'csv'
 
 class MonitoringError < ActiveRecord::Base
-  SEVERITIES = %w[fatal error warning info].freeze
+  include RedmineMonitoring::Constants
 
   belongs_to :user, optional: true
 
@@ -28,49 +28,6 @@ class MonitoringError < ActiveRecord::Base
   end
   scope :created_from, ->(date) { where("created_at >= ?", date.to_date.beginning_of_day) if date.present? }
   scope :created_to, ->(date) { where("created_at <= ?", date.to_date.end_of_day) if date.present? }
-
-  USEFUL_HEADERS = %w[HTTP_USER_AGENT HTTP_REFERER HTTP_ACCEPT HTTP_ACCEPT_LANGUAGE HTTP_X_REQUESTED_WITH].freeze
-
-  HTTP_STATUS_TEXT = {
-    100 => "Continue",
-    101 => "Switching Protocols",
-    102 => "Processing",
-    103 => "Early Hints",
-
-    200 => "OK",
-    201 => "Created",
-    202 => "Accepted",
-    203 => "Non-Authoritative Information",
-    204 => "No Content",
-    205 => "Reset Content",
-    206 => "Partial Content",
-    207 => "Multi-Status",
-    208 => "Already Reported",
-    226 => "IM Used",
-
-    300 => "Multiple Choices",
-    301 => "Moved Permanently",
-    302 => "Found",
-    303 => "See Other",
-    304 => "Not Modified",
-    305 => "Use Proxy",
-    307 => "Temporary Redirect",
-    308 => "Permanent Redirect",
-
-    400 => "Bad Request",
-    401 => "Unauthorized",
-    403 => "Forbidden",
-    404 => "Not Found",
-    405 => "Method Not Allowed",
-    408 => "Request Timeout",
-    422 => "Unprocessable Entity",
-    429 => "Too Many Requests",
-
-    500 => "Internal Server Error",
-    502 => "Bad Gateway",
-    503 => "Service Unavailable",
-    504 => "Gateway Timeout"
-  }.freeze
 
   def self.max_errors
     plugin_settings = Setting.respond_to?(:plugin_redmine_monitoring) ? Setting.plugin_redmine_monitoring : {}
@@ -131,9 +88,9 @@ class MonitoringError < ActiveRecord::Base
   def self.log_levels
     settings = Setting.respond_to?(:plugin_redmine_monitoring) ? Setting.plugin_redmine_monitoring : {}
     levels = Array(settings['log_levels']).map(&:to_s) & SEVERITIES
-    levels.presence || %w[fatal error warning info]
+    levels.presence || %w[fatal error warning]
   rescue
-    %w[fatal error warning info]
+    %w[fatal error warning]
   end
 
   def self.allow_severity?(severity)
@@ -148,6 +105,18 @@ class MonitoringError < ActiveRecord::Base
     return 'warning' if code >= 400
 
     'info'
+  end
+
+  def self.enabled_formats
+    settings = Setting.respond_to?(:plugin_redmine_monitoring) ? Setting.plugin_redmine_monitoring : {}
+    list = Array(settings['enabled_formats']).map { |format| format.to_s.strip.upcase }.uniq
+    list.presence || %w[HTML JSON]
+  rescue
+    %w[HTML JSON]
+  end
+
+  def self.allow_format?(format)
+    enabled_formats.include?(format.to_s.strip.upcase)
   end
 
   private
