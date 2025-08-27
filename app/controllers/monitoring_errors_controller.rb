@@ -18,6 +18,7 @@ class MonitoringErrorsController < ApplicationController
     @formats = MonitoringError.distinct.pluck(:format).compact.sort
     @envs = MonitoringError.distinct.pluck(:env).compact.sort
     @users = User.where(id: MonitoringError.distinct.pluck(:user_id).compact)
+    @severities = MonitoringError.distinct.pluck(:severity).compact.sort
 
     respond_to do |format|
       format.html

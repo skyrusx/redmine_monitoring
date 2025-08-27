@@ -1,8 +1,13 @@
+require 'csv'
+
 class MonitoringError < ActiveRecord::Base
+  SEVERITIES = %w[fatal error warning info].freeze
+
   belongs_to :user, optional: true
 
   validates :error_class, presence: true
   validates :message, presence: true
+  validates :severity, inclusion: { in: SEVERITIES }, allow_nil: true
 
   after_commit :enforce_max_errors, :enforce_retention, on: :create
 
@@ -14,6 +19,7 @@ class MonitoringError < ActiveRecord::Base
   scope :by_status, ->(value) { where(status_code: value) if value.present? }
   scope :by_error_format, ->(value) { where(format: value) if value.present? }
   scope :by_env, ->(value) { where(env: value) if value.present? }
+  scope :by_severity, ->(value) { where(severity: value) if value.present? }
   scope :by_message, ->(value) do
     if value.present?
       adapter = connection.adapter_name
@@ -26,6 +32,31 @@ class MonitoringError < ActiveRecord::Base
   USEFUL_HEADERS = %w[HTTP_USER_AGENT HTTP_REFERER HTTP_ACCEPT HTTP_ACCEPT_LANGUAGE HTTP_X_REQUESTED_WITH].freeze
 
   HTTP_STATUS_TEXT = {
+    100 => "Continue",
+    101 => "Switching Protocols",
+    102 => "Processing",
+    103 => "Early Hints",
+
+    200 => "OK",
+    201 => "Created",
+    202 => "Accepted",
+    203 => "Non-Authoritative Information",
+    204 => "No Content",
+    205 => "Reset Content",
+    206 => "Partial Content",
+    207 => "Multi-Status",
+    208 => "Already Reported",
+    226 => "IM Used",
+
+    300 => "Multiple Choices",
+    301 => "Moved Permanently",
+    302 => "Found",
+    303 => "See Other",
+    304 => "Not Modified",
+    305 => "Use Proxy",
+    307 => "Temporary Redirect",
+    308 => "Permanent Redirect",
+
     400 => "Bad Request",
     401 => "Unauthorized",
     403 => "Forbidden",
@@ -34,6 +65,7 @@ class MonitoringError < ActiveRecord::Base
     408 => "Request Timeout",
     422 => "Unprocessable Entity",
     429 => "Too Many Requests",
+
     500 => "Internal Server Error",
     502 => "Bad Gateway",
     503 => "Service Unavailable",
@@ -70,11 +102,11 @@ class MonitoringError < ActiveRecord::Base
   end
 
   def enforce_retention(batch_size: 1000)
-    days = self.retention_days
+    days = self.class.retention_days
     return if days <= 0
 
     cutoff_date = Time.current - days.days
-    scope = self.where(arel_table[:created_at].lt(cutoff_date))
+    scope = self.class.where(self.class.arel_table[:created_at].lt(cutoff_date))
 
     loop do
       deleted = scope.limit(batch_size).delete_all
@@ -93,23 +125,46 @@ class MonitoringError < ActiveRecord::Base
        .by_message(params[:message])
        .created_from(params[:created_at_from])
        .created_to(params[:created_at_to])
+       .by_severity(params[:severity])
+  end
+
+  def self.log_levels
+    settings = Setting.respond_to?(:plugin_redmine_monitoring) ? Setting.plugin_redmine_monitoring : {}
+    levels = Array(settings['log_levels']).map(&:to_s) & SEVERITIES
+    levels.presence || %w[fatal error warning info]
+  rescue
+    %w[fatal error warning info]
+  end
+
+  def self.allow_severity?(severity)
+    log_levels.include?(severity.to_s)
+  end
+
+  def self.severity_for(status_code, exception = nil)
+    return 'fatal' if exception
+
+    code = status_code.to_i
+    return 'error' if code >= 500
+    return 'warning' if code >= 400
+
+    'info'
   end
 
   private
 
   def enforce_with_boundary
     # Boundary + батчи (по умолчанию)
-    limit = self.max_errors
-    return unless self.latest_order.offset(limit).limit(1).exists?
+    limit = self.class.max_errors
+    return unless self.class.latest_order.offset(limit).limit(1).exists?
 
-    boundary = self.latest_order.offset(limit - 1).select(:created_at, :id).first
+    boundary = self.class.latest_order.offset(limit - 1).select(:created_at, :id).first
     return unless boundary
 
-    scope = self.where(
-      self.arel_table[:created_at].lt(boundary.created_at)
+    scope = self.class.where(
+      self.class.arel_table[:created_at].lt(boundary.created_at)
           .or(
-            self.arel_table[:created_at].eq(boundary.created_at)
-                .and(self.arel_table[:id].lt(boundary.id))
+            self.class.arel_table[:created_at].eq(boundary.created_at)
+                .and(self.class.arel_table[:id].lt(boundary.id))
           )
     )
 

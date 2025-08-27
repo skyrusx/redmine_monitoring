@@ -29,7 +29,10 @@
     <%= f.select :action_name, options_for_select(@action_names, params[:action_name]), { include_blank: l(:label_select_action_name) }, { class: "monitoring-select2" } %>
   </div>
 
-  <div class="mm-field"></div>
+  <div class="mm-field">
+    <%= f.select :severity, options_for_select(@severities, params[:severity]), { include_blank: l(:label_select_severity) }, { class: "monitoring-select2" } %>
+  </div>
+
   <div class="mm-field"></div>
 
   <div class="mm-field">

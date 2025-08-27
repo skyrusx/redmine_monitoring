@@ -30,7 +30,8 @@
         <th class="mm-col-collapse"></th>
         <th><%= l(:label_date) %></th>
         <th><%= l(:label_endpoint) %></th>
-        <th><%= l(:label_error_class) %></th>
+        <th class="mm-col-short"><%= l(:label_error_class) %></th>
+        <th class="mm-col-short"><%= l(:label_severity) %></th>
         <th><%= l(:label_message) %></th>
       </tr>
     </thead>
@@ -40,12 +41,13 @@
           <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
           <td><%= error.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
           <td><span class="mm-mono"><%= endpoint(error) %></span></td>
-          <td><span class="mm-badge"><%= error_class(error) %></span></td>
+          <td class="mm-col-short"><span class="mm-badge"><%= error_class(error) %></span></td>
+          <td class="mm-col-short"><span class="mm-badge mm-badge__<%= error.severity %>"><%= error.severity.titleize %></span></td>
           <td class="mm-ellipsis" title="<%= error.message %>"><%= truncate(error.message, length: 80) %></td>
         </tr>
 
         <tr id="details-<%= index %>" class="details-row" style="display:none;">
-          <td colspan="5">
+          <td colspan="6">
             <div class="mm-details">
               <div class="mm-kv"><span><%= l(:label_message) %></span><code><%= error.message %></code></div>
               <div class="mm-kv"><span><%= l(:label_location) %></span><code><%= location(error) %></code></div>

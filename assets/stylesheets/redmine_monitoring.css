@@ -1,6 +1,6 @@
 .mm-title {
-  margin: 0 0 .25rem;
-  font-weight: 600;
+  /*margin: 0 0 .25rem;*/
+  /*font-weight: 600;*/
 }
 
 .mm-subtitle {
@@ -78,6 +78,10 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+.mm-table thead th.mm-col-short {
+  text-align: center;
+}
+
 .mm-table tbody td {
   padding: .55rem .75rem;
   border-bottom: 1px solid #f1f5f9;
@@ -95,6 +99,11 @@
 
 .mm-col-collapse {
   width: 36px;
+  text-align: center;
+}
+
+.mm-col-short {
+  width: 150px;
   text-align: center;
 }
 
@@ -132,6 +141,24 @@
   background: #eef2ff;
   color: #3730a3;
   font-size: .85em;
+}
+
+.mm-badge__fatal {
+  background-color: #842029;
+  color: #fff;
+}
+
+.mm-badge__error {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.mm-badge__warning {
+  background-color: #ffda6a;
+}
+
+.mm-badge__info {
+  background-color: #6edff6;
 }
 
 .mm-ellipsis {

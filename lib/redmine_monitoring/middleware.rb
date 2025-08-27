@@ -7,15 +7,15 @@ module RedmineMonitoring
     def call(env)
       status, headers, response = @app.call(env)
 
-      if status >= 400
-        log_http_error(status, env)
-        save_error_to_db(status: status, env: env)
-      end
+      severity = MonitoringError.severity_for(status)
+      log_http_error(status, env)
+      save_error_to_db(status: status, env: env, severity: severity)
 
       [status, headers, response]
     rescue => e
+      severity = MonitoringError.severity_for(status, true)
       log_exception(e, env)
-      save_error_to_db(exception: e, env: env)
+      save_error_to_db(exception: e, env: env, severity: severity)
     end
 
     private
@@ -32,12 +32,14 @@ module RedmineMonitoring
       logger.warn "[Monitoring] HTTP #{status} on #{env['REQUEST_METHOD']} #{env['PATH_INFO']}"
     end
 
-    def save_error_to_db(exception: nil, status: nil, env: )
+    def save_error_to_db(exception: nil, status: nil, env: , severity: "fatal")
+      return unless MonitoringError.allow_severity?(severity)
+
       request = ActionDispatch::Request.new(env)
       controller_instance = env['action_controller.instance']
 
       error_params = {
-        exception_class: exception ? exception.class.to_s : "HTTPError",
+        exception_class: exception_class(exception, status),
         error_class: exception ? exception.class.to_s : "HTTP #{status}",
         message: exception ? exception.message.to_s : ([status, MonitoringError::HTTP_STATUS_TEXT[status]].join(" ") rescue "Error #{status}"),
         backtrace: exception ? Array(exception.backtrace).join("\n") : "",
@@ -54,7 +56,7 @@ module RedmineMonitoring
         params: safe_params(request.params).to_json,
         headers: filtered_headers(request).to_json,
         env: Rails.env,
-        severity: 'fatal'
+        severity: severity
       }
 
       MonitoringError.create!(error_params)
@@ -93,6 +95,19 @@ module RedmineMonitoring
 
     def monitoring_logger
       Logger.new("log/monitoring.log")
+    end
+
+    def exception_class(exception, status)
+      return exception.class.to_s if exception
+
+      case status.to_i
+      when 100..199 then "Informational"
+      when 200..299 then "Success"
+      when 300..399 then "Redirect"
+      when 400..499 then "ClientError"
+      when 500..599 then "ServerError"
+      else "UnknownHTTPStatus"
+      end
     end
   end
 end
