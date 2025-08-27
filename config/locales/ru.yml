@@ -7,11 +7,13 @@ ru:
       label_enabled: "Включить мониторинг"
       label_dev_mode: "Режим разработки"
       label_max_errors: "Максимум записей"
-      label_max_errors_hint: "Ограничивает размер таблицы, старые записи будут удаляться."
+      label_max_errors_hint: "Ограничение размера таблицы, старые записи будут удаляться."
       label_retention_days: "Срок хранения (дней)"
-      label_retention_days_hint: "Удаляет ошибки старше указанного количества дней."
+      label_retention_days_hint: "Удаление ошибок старше указанного количества дней."
       label_log_levels: "Уровни ошибок"
-      label_log_levels_hint: "Сохранять только выбранные уровни."
+      label_log_levels_hint: "Сохранение только выбранных уровней."
+      label_enabled_formats: "Ограничение форматов"
+      label_enabled_formats_hint: "Логирование только выбранных форматов запросов."
 
   notices:
     test_error: "Тестовая ошибка успешно создана"
@@ -70,6 +72,7 @@ ru:
   label_select_message: "Поиск по сообщениям..."
   label_select_log_levels: "-- Выберите уровни --"
   label_select_severity: "-- Выберите уровень --"
+  label_select_enabled_formats: "-- Выберите форматы --"
 
   label_pdf_title: "Мониторинг. Список ошибок"
   label_pdf_section_main: "Основная информация"

@@ -12,6 +12,8 @@ en:
       label_retention_days_hint: "Deletes errors older than the specified number of days."
       label_log_levels: "Log levels"
       label_log_levels_hint: "Store only selected levels (fatal, error, warning)."
+      label_enabled_formats: "Enabled formats"
+      label_enabled_formats_hint: "Log only selected request formats."
 
   notices:
     test_error: "Test error created successfully"
@@ -70,6 +72,7 @@ en:
   label_select_message: "Search in messages..."
   label_select_log_levels: "-- Select levels --"
   label_select_severity: "-- Select severity --"
+  label_select_enabled_formats: "-- Select formats --"
 
   label_pdf_title: "Monitoring. Error list"
   label_pdf_section_main: "Main info"
