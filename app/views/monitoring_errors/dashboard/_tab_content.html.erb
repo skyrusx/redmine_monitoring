@@ -1,0 +1,83 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" %>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js" %>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chartkick@4.2.0/dist/chartkick.min.js" %>
+<% end %>
+
+<div id="mm-tab-dashboard" class="mm-tabpanel">
+  <div class="mm-hint"><%= l(:label_dashboard_hint) %></div>
+
+  <div class="mm-kpis">
+    <div class="mm-kpi">
+      <div class="mm-kpi-value"><%= @kpi_5xx %></div>
+      <div class="mm-kpi-label"><%= l(:label_kpi_5xx) %></div>
+    </div>
+    <div class="mm-kpi">
+      <div class="mm-kpi-value"><%= @kpi_4xx %></div>
+      <div class="mm-kpi-label"><%= l(:label_kpi_4xx) %></div>
+    </div>
+    <div class="mm-kpi">
+      <div class="mm-kpi-value"><%= @kpi_slow %></div>
+      <div class="mm-kpi-label"><%= l(:label_kpi_slow) %></div>
+    </div>
+    <div class="mm-kpi">
+      <div class="mm-kpi-value"><%= @kpi_avg_ms %> <%= l(:label_time_ms) %></div>
+      <div class="mm-kpi-label"><%= l(:label_kpi_average) %></div>
+    </div>
+  </div>
+
+  <div class="mm-charts">
+    <div class="mm-chart">
+      <h4 class="mm-chart-title"><%= l(:label_chart_errors_by_day) %></h4>
+      <%= line_chart(@errors_by_day, library: { legend: { position: "none" } }, id: "chart-errors-by-day", refresh: 0) %>
+    </div>
+    <div class="mm-chart">
+      <h4 class="mm-chart-title"><%= l(:label_chart_average_duration) %></h4>
+      <%= line_chart(@avg_duration, library: { legend: { position: "none" } }, id: "chart-avg-duration", refresh: 0) %>
+    </div>
+  </div>
+
+  <div class="mm-tops">
+    <div class="mm-top">
+      <h4 class="mm-chart-title"><%= l(:label_top_urls) %></h4>
+      <table class="mm-table">
+        <thead>
+          <tr>
+            <th><%= l(:label_url) %></th>
+            <th><%= l(:label_errors) %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @top_urls.each do |top_url| %>
+            <% url, error = top_url %>
+            <tr>
+              <td><%= url %></td>
+              <td><%= error %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mm-top">
+      <h4 class="mm-chart-title"><%= l(:label_top_users) %></h4>
+      <table class="mm-table">
+        <thead>
+          <tr>
+            <th><%= l(:label_user) %></th>
+            <th><%= l(:label_errors) %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @top_users.each do |top_user| %>
+            <% user, error = top_user %>
+            <tr>
+              <td><%= user %></td>
+              <td><%= error %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

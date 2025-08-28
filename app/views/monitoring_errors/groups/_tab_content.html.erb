@@ -1,0 +1,51 @@
+<div id="mm-tab-groups" class="mm-tabpanel" style="display: block;">
+  <p class="mm-subtitle"><i><%= label_hint("groups") %></i></p>
+
+  <table class="mm-table">
+    <thead>
+      <tr>
+        <%# <th class="mm-col-collapse"></th> %>
+        <th class="mm-col-collapse"><%= l(:label_status) %></th>
+        <th class="mm-col-short"><%= l(:label_first_seen_at) %></th>
+        <th class="mm-col-short"><%= l(:label_last_seen_at) %></th>
+        <th class="mm-col-medium"><%= l(:label_error_class) %> / <%= l(:label_exception_class_short) %></th>
+        <th><%= l(:label_message) %></th>
+        <th class="mm-col-short"><%= l(:label_total) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @groups.each_with_index do |group, index| %>
+        <tr class="mm-row error-row" data-target="details-<%= index %>">
+          <%# <td class="mm-col-collapse"><span class="expand-icon">▸</span></td> %>
+          <td class="mm-col-collapse" title="<%= activity_status(group)[:info] %>">
+            <span class="mm-badge mm-badge__<%= activity_status(group)[:status] %>"></span>
+          </td>
+          <td class="mm-col-short"><span><%= group.first_seen_at.strftime("%Y-%m-%d %H:%M:%S") %></span></td>
+          <td class="mm-col-short"><span><%= group.last_seen_at.strftime("%Y-%m-%d %H:%M:%S") %></span></td>
+          <td class="mm-col-short"><span class="mm-badge"><%= error_class(group) %></span></td>
+          <td class="mm-ellipsis" title="<%= group.message %>"><%= truncate(group.message, length: 80) %></td>
+          <td class="mm-col-short" title="Разница между событиями - <%= human_duration(group) %>"><span><%= group.count %></span></td>
+        </tr>
+
+        <tr id="details-<%= index %>" class="details-row" style="display:none;">
+          <td colspan="6">
+            <div class="mm-details"></div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mm-pagination">
+    <div class="mm-pagination-links">
+      <%= pagination_links_full @paginator, @count %>
+    </div>
+
+    <div class="mm-pagination-perpage">
+      <span><%= l(:label_per_page) %></span>
+      <% Setting.per_page_options_array.each do |per_page| %>
+        <%= link_to per_page, monitoring_path_with(per_page: per_page), class: "mm-page-size #{'is-active' if per_page == @paginator.per_page}" %>
+      <% end %>
+    </div>
+  </div>
+</div>

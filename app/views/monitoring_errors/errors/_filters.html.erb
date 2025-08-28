@@ -1,18 +1,20 @@
+<%= hidden_field_tag :tab, current_tab %>
+
 <div class="mm-row">
   <div class="mm-field">
     <%= f.select :error_class, options_for_select(@error_classes, params[:error_class]), { include_blank: l(:label_select_error_class) }, { class: "monitoring-select2" } %>
   </div>
 
   <div class="mm-field">
+    <%= f.select :exception_class, options_for_select(@exception_classes, params[:exception_class]), { include_blank: l(:label_select_exception_class) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :severity, options_for_select(@severities, params[:severity]), { include_blank: l(:label_select_severity) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
     <%= f.select :status_code, options_for_select(@status_codes, params[:status_code]), { include_blank: l(:label_select_status_code) }, { class: "monitoring-select2" } %>
-  </div>
-
-  <div class="mm-field">
-    <%= f.select :error_format, options_for_select(@formats, params[:error_format]), { include_blank: l(:label_select_format) }, { class: "monitoring-select2" } %>
-  </div>
-
-  <div class="mm-field">
-    <%= f.select :env, options_for_select(@envs, params[:env]), { include_blank: l(:label_select_env) }, { class: "monitoring-select2" } %>
   </div>
 
   <div class="mm-field">
@@ -30,10 +32,12 @@
   </div>
 
   <div class="mm-field">
-    <%= f.select :severity, options_for_select(@severities, params[:severity]), { include_blank: l(:label_select_severity) }, { class: "monitoring-select2" } %>
+    <%= f.select :error_format, options_for_select(@formats, params[:error_format]), { include_blank: l(:label_select_format) }, { class: "monitoring-select2" } %>
   </div>
 
-  <div class="mm-field"></div>
+  <div class="mm-field">
+    <%= f.select :env, options_for_select(@envs, params[:env]), { include_blank: l(:label_select_env) }, { class: "monitoring-select2" } %>
+  </div>
 
   <div class="mm-field">
     <%= f.date_field :created_at_from, value: params[:created_at_from] %>
@@ -53,6 +57,6 @@
 
   <div>
     <%= f.submit l(:button_apply), class: 'mm-btn mm-btn--primary' %>
-    <%= link_to l(:label_clear), monitoring_errors_path, class: 'mm-btn mm-btn--secondary' %>
+    <%= link_to l(:label_clear), monitoring_errors_path(tab: current_tab), class: 'mm-btn mm-btn--secondary' %>
   </div>
 </div>

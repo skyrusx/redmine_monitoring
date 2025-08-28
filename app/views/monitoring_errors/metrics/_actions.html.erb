@@ -1,0 +1,5 @@
+<div class="mm-actions">
+  <%= button_to l("label_delete_#{current_tab}"), monitoring_clear_path(tab: current_tab), method: :post,
+                data: { confirm: l("notices.confirm") },
+                class: 'mm-btn mm-btn--danger' %>
+</div>

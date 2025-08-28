@@ -1,0 +1,98 @@
+<div id="mm-tab-metrics" class="mm-tabpanel" style="display:block">
+  <p class="mm-subtitle"><i><%= label_hint("metrics") %></i></p>
+
+  <table class="mm-table">
+    <thead>
+      <tr>
+        <th class="mm-col-collapse"></th>
+        <th class="mm-col-short"><%= l(:label_date) %></th>
+        <th class="mm-col-short"><%= l(:label_method) %></th>
+        <th><%= l(:label_url) %></th>
+        <th class="mm-col-short"><%= l(:label_status) %></th>
+        <th class="mm-col-short"><%= l(:label_format) %></th>
+        <th class="mm-col-short"><%= l(:label_time_with_ms) %></th>
+        <th class="mm-col-short"><%= l(:label_size_with_kb) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @metrics.each_with_index do |metric, index| %>
+        <tr class="mm-row error-row" data-target="details-<%= index %>">
+          <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
+          <td class="mm-col-short"><%= metric.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td class="mm-col-short"><span class="mm-mono"><%= metric.method %></span></td>
+          <td title="<%= metric.path %>"><span class="mm-badge mm-badge"><%= metric.path.truncate(42) %></span></td>
+          <td class="mm-col-short"><span class="mm-badge mm-badge__<%= metric.status_code.to_s.first %>xx"><%= metric.status_code %></span></td>
+          <td class="mm-col-short"><span class="mm-mono"><%= metric.format %></span></td>
+          <td class="mm-col-short"><span class="mm-mono"><%= metric.duration_ms %></span></td>
+          <td class="mm-col-short"><span class="mm-mono"><%= metric.bytes_sent %></span></td>
+        </tr>
+
+        <tr id="details-<%= index %>" class="details-row" style="display:none;">
+          <td colspan="8">
+            <div class="mm-details">
+              <div class="mm-kv"><span><%= l(:label_date) %></span><code><%= metric.created_at.strftime("%Y-%m-%d %H:%M:%S") %></code></div>
+              <div class="mm-kv"><span><%= l(:label_env) %></span><code><%= metric.env %></code></div>
+              <div class="mm-kv"><span><%= l(:label_method) %></span><code><%= metric.method %></code></div>
+              <div class="mm-kv"><span><%= l(:label_full_path) %></span><code><%= metric.path %></code></div>
+              <div class="mm-kv"><span><%= l(:label_normalized_path) %></span><code><%= metric.normalized_path %></code></div>
+              <div class="mm-kv"><span><%= l(:label_endpoint) %></span><code><%= metric.controller_name %>#<%= metric.action_name %></code></div>
+              <div class="mm-kv"><span><%= l(:label_format) %></span><code><%= metric.format %></code></div>
+              <div class="mm-kv"><span><%= l(:label_status) %></span><code><%= metric.status_code %></code></div>
+              <div class="mm-kv"><span><%= l(:label_time_with_ms) %></span><code><%= metric.duration_ms %></code></div>
+              <div class="mm-kv"><span><%= l(:label_db_with_ms) %></span><code><%= metric.db_ms %></code></div>
+              <div class="mm-kv"><span><%= l(:label_view_with_ms) %></span><code><%= metric.view_ms %></code></div>
+              <div class="mm-kv"><span><%= l(:label_bytes_sent) %></span><code><%= metric.bytes_sent %></code></div>
+              <div class="mm-kv"><span><%= l(:label_user) %></span><code><%= user_info(metric.user) %></code></div>
+              <div class="mm-kv"><span><%= l(:label_ip_address) %></span><code><%= metric.ip_address %></code></div>
+
+              <div class="mm-block">
+                <div class="mm-block__title"><%= l(:label_user_agent) %></div>
+                <div class="mm-code">
+                  <div class="mm-code__header">
+                    <span><%= l(:label_code) %></span>
+                    <button class="mm-copy-btn" data-target="headers-<%= index %>">
+                      <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                      <%= l(:label_copy) %>
+                    </button>
+                  </div>
+                  <div class="mm-code__body">
+                    <pre id="params-<%= index %>"><code><%= metric.user_agent %></code></pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mm-block">
+                <div class="mm-block__title"><%= l(:label_referer) %></div>
+                <div class="mm-code">
+                  <div class="mm-code__header">
+                    <span><%= l(:label_code) %></span>
+                    <button class="mm-copy-btn" data-target="headers-<%= index %>">
+                      <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                      <%= l(:label_copy) %>
+                    </button>
+                  </div>
+                  <div class="mm-code__body">
+                    <pre id="params-<%= index %>"><code><%= metric.referer %></code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mm-pagination">
+    <div class="mm-pagination-links">
+      <%= pagination_links_full @paginator, @count %>
+    </div>
+
+    <div class="mm-pagination-perpage">
+      <span><%= l(:label_per_page) %></span>
+      <% Setting.per_page_options_array.each do |per_page| %>
+        <%= link_to per_page, monitoring_path_with(per_page: per_page), class: "mm-page-size #{'is-active' if per_page == @paginator.per_page}" %>
+      <% end %>
+    </div>
+  </div>
+</div>
