@@ -1,6 +1,6 @@
 module RedmineMonitoring
   class Middleware
-    include RedmineMonitoring::Constants
+    include Constants
 
     def initialize(app)
       @app = app
