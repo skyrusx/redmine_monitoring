@@ -1,10 +1,11 @@
 require_relative 'lib/redmine_monitoring/constants'
+require_relative 'lib/redmine_monitoring/request_subscriber'
 
 Redmine::Plugin.register :redmine_monitoring do
   name 'Redmine Monitoring plugin'
   author 'Ruslan Fedotov'
   description 'Error & performance monitoring'
-  version '0.0.7'
+  version '0.0.8'
   url 'https://github.com/skyrusx/redmine_monitoring'
   author_url 'https://github.com/skyrusx/'
 
@@ -21,3 +22,4 @@ Redmine::Plugin.register :redmine_monitoring do
 end
 
 Rails.application.config.middleware.use RedmineMonitoring::Middleware
+RedmineMonitoring::RequestSubscriber.attach!

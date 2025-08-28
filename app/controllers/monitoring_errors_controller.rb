@@ -5,31 +5,75 @@ class MonitoringErrorsController < ApplicationController
 
   before_action :require_admin
   before_action :check_monitoring_enabled
+  before_action :set_current_tab
+
+  helper_method :current_tab
 
   def index
-    scope = MonitoringError.filter(params)
+    @current_tab = params[:tab].presence || 'dashboard'
+    @base_scope = MonitoringError.filter(params)
 
-    @limit = per_page_param
-    @count = scope.count
-    @paginator = Redmine::Pagination::Paginator.new(@count, @limit, params[:page])
-    @offset = @paginator.offset
-    @errors = scope.order(created_at: :desc).offset(@offset).limit(@paginator.per_page)
+    case @current_tab
+    when 'dashboard'
+      @errors_by_day = MonitoringError.group_by_day(:created_at, last: 7).count
+      @avg_duration = MonitoringRequest.group_by_day(:created_at, last: 7).average(:duration_ms)
 
-    @error_classes = MonitoringError.distinct.pluck(:error_class).compact.sort
-    @controller_names = MonitoringError.distinct.pluck(:controller_name).compact.sort
-    @action_names = MonitoringError.distinct.pluck(:action_name).compact.sort
-    @status_codes = MonitoringError.distinct.pluck(:status_code).compact.sort
-    @formats = MonitoringError.distinct.pluck(:format).compact.sort
-    @envs = MonitoringError.distinct.pluck(:env).compact.sort
-    @users = User.where(id: MonitoringError.distinct.pluck(:user_id).compact)
-    @severities = MonitoringError.distinct.pluck(:severity).compact.sort
+      @top_urls = MonitoringRequest.group(:normalized_path).order(Arel.sql("count_all DESC")).limit(5).count
+      top_users = MonitoringError.group(:user_id).order(Arel.sql("count_all DESC")).limit(5).count
+      @top_users = top_users.transform_keys { |user_id| User.find_by(id: user_id)&.name }
 
-    respond_to do |format|
-      format.html
-      format.csv { send_data MonitoringErrors::Export.new(scope).to_csv, filename: "monitoring_errors-#{Date.today}.csv" }
-      format.json { send_data MonitoringErrors::Export.new(scope).to_json, filename: "monitoring_errors-#{Date.today}.json", type: "application/json" }
-      format.pdf { send_data MonitoringErrors::Export.new(scope).to_pdf, filename: "monitoring_errors-#{Date.today}.pdf", type: "application/pdf" }
-      format.xlsx { send_data MonitoringErrors::Export.new(scope).to_xlsx, filename: "monitoring_errors-#{Date.today}.xlsx" }
+      @kpi_5xx = MonitoringRequest.where("status_code >= 500").where("created_at >= ?", 7.days.ago).count
+      @kpi_4xx = MonitoringRequest.where("status_code >= 400 AND status_code < 500").where("created_at >= ?", 7.days.ago).count
+      @kpi_slow = MonitoringRequest.where("duration_ms > ?", 1000).where("created_at >= ?", 7.days.ago).count
+      @kpi_avg_ms = MonitoringRequest.where("created_at >= ?", 7.days.ago).average(:duration_ms).to_f.round(2)
+    when 'metrics'
+      metrics_scope = MonitoringRequest.all.order(created_at: :desc)
+
+      @limit = per_page_param
+      @count = metrics_scope.count
+      @paginator = Redmine::Pagination::Paginator.new(@count, @limit, params[:page])
+      @offset = @paginator.offset
+
+      @metrics = metrics_scope.order(created_at: :desc).offset(@offset).limit(@paginator.per_page)
+    when 'groups'
+      adapter = ActiveRecord::Base.connection.adapter_name.downcase
+      first_frame_sql = adapter.include?('postgres') ? "substring(backtrace from '^[^\\n]+')" : "SUBSTRING_INDEX(backtrace, '\n', 1)"
+
+      groups_scope = @base_scope.select("exception_class, message, #{first_frame_sql} AS first_frame,
+                                        COUNT(*) AS count,
+                                        MIN(created_at) AS first_seen_at,
+                                        MAX(created_at) AS last_seen_at, MIN(error_class) AS error_class")
+                                .group("exception_class, message, #{first_frame_sql}")
+
+      @count = groups_scope.except(:select, :order).count.size
+      @limit = per_page_param
+      @paginator = Redmine::Pagination::Paginator.new(@count, @limit, params[:page])
+
+      @groups = groups_scope.order("count DESC, last_seen_at DESC").offset(@paginator.offset).limit(@paginator.per_page)
+    else
+      @limit = per_page_param
+      @count = @base_scope.count
+      @paginator = Redmine::Pagination::Paginator.new(@count, @limit, params[:page])
+      @offset = @paginator.offset
+      @errors = @base_scope.order(created_at: :desc).offset(@offset).limit(@paginator.per_page)
+
+      @error_classes = MonitoringError.distinct.pluck(:error_class).compact.sort
+      @exception_classes = MonitoringError.distinct.pluck(:exception_class  ).compact.sort
+      @controller_names = MonitoringError.distinct.pluck(:controller_name).compact.sort
+      @action_names = MonitoringError.distinct.pluck(:action_name).compact.sort
+      @status_codes = MonitoringError.distinct.pluck(:status_code).compact.sort
+      @formats = MonitoringError.distinct.pluck(:format).compact.sort
+      @envs = MonitoringError.distinct.pluck(:env).compact.sort
+      @users = User.where(id: MonitoringError.distinct.pluck(:user_id).compact)
+      @severities = MonitoringError.distinct.pluck(:severity).compact.sort
+
+      respond_to do |format|
+        format.html
+        format.csv { send_data MonitoringErrors::Export.new(@base_scope).to_csv, filename: "monitoring_errors-#{Date.today}.csv" }
+        format.json { send_data MonitoringErrors::Export.new(@base_scope).to_json, filename: "monitoring_errors-#{Date.today}.json", type: "application/json" }
+        format.pdf { send_data MonitoringErrors::Export.new(@base_scope).to_pdf, filename: "monitoring_errors-#{Date.today}.pdf", type: "application/pdf" }
+        format.xlsx { send_data MonitoringErrors::Export.new(@base_scope).to_xlsx, filename: "monitoring_errors-#{Date.today}.xlsx" }
+      end
     end
   end
 
@@ -65,12 +109,16 @@ class MonitoringErrorsController < ApplicationController
       severity: severity
     )
 
-    redirect_to monitoring_errors_path, notice: I18n.t("notices.test_error")
+    redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t("notices.test_error")
   end
 
   def clear
-    MonitoringError.delete_all
-    redirect_to monitoring_errors_path, notice: I18n.t("notices.clear")
+    case params[:tab]
+    when "errors" then MonitoringError.in_batches(of: 1000).delete_all
+    when "metrics" then MonitoringRequest.in_batches(of: 1000).delete_all
+    else nil
+    end
+    redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t("notices.clear.#{params[:tab]}")
   end
 
   private
@@ -104,5 +152,13 @@ class MonitoringErrorsController < ApplicationController
   def filtered_headers
     raw = request.headers.env.slice(*USEFUL_HEADERS)
     raw.transform_values { |value| value.is_a?(String) ? value : value.to_s }
+  end
+
+  def set_current_tab
+    @current_tab = params[:tab].presence || 'errors'
+  end
+
+  def current_tab
+    @current_tab
   end
 end

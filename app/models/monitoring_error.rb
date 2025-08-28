@@ -8,10 +8,12 @@ class MonitoringError < ActiveRecord::Base
   validates :error_class, presence: true
   validates :message, presence: true
   validates :severity, inclusion: { in: SEVERITIES }, allow_nil: true
+  before_validation :assign_fingerprint, on: :create
 
   after_commit :enforce_max_errors, :enforce_retention, on: :create
 
   scope :latest_order, -> { order(created_at: :desc, id: :desc) }
+  scope :by_exception_class, ->(value) { where(exception_class: value) if value.present? }
   scope :by_error_class, ->(value) { where(error_class: value) if value.present? }
   scope :by_controller_name, ->(value) { where(controller_name: value) if value.present? }
   scope :by_action_name, ->(value) { where(action_name: value) if value.present? }
@@ -73,6 +75,7 @@ class MonitoringError < ActiveRecord::Base
 
   def self.filter(params)
     all.by_error_class(params[:error_class])
+       .by_exception_class(params[:exception_class])
        .by_controller_name(params[:controller_name])
        .by_action_name(params[:action_name])
        .by_user(params[:user_id])
@@ -115,8 +118,33 @@ class MonitoringError < ActiveRecord::Base
     %w[HTML JSON]
   end
 
+  def self.normalize_format(fmt)
+    fmt.to_s.strip.downcase.presence || 'html'
+  end
+
   def self.allow_format?(format)
     enabled_formats.include?(format.to_s.strip.upcase)
+  end
+
+  def assign_fingerprint
+    self.fingerprint ||= self.class.compute_fingerprint(exception_class || error_class, message, backtrace, file, line)
+  end
+
+  def self.compute_fingerprint(exc, msg, bt, file = nil, line = nil)
+    normalized_msg = msg.to_s
+                        .gsub(/\d+/, ':n')
+                        .gsub(/[0-9a-f]{8,}/i, ':h')
+                        .strip
+                        .downcase
+
+    first_frame = if bt.present?
+                    bt.to_s.lines.first.to_s.strip
+                  else
+                    [file, line].compact.join(':')
+                  end
+
+    raw = [exc.to_s, normalized_msg, first_frame].join('|')
+    Digest::SHA1.hexdigest(raw)
   end
 
   private
