@@ -41,5 +41,14 @@
                      multiple: true, size: 6, class: 'monitoring-select2', data: { placeholder: l(:label_select_enabled_formats) } %>
       <em class="info"><%= l("settings.fields.label_enabled_formats_hint") %></em>
     </p>
+    <p>
+      <%= label_tag 'settings_enabled_formats', l("settings.fields.label_enable_metrics") %>
+      <%= check_box_tag 'settings[enable_metrics]', true, @settings[:enable_metrics] %>
+    </p>
+    <p>
+      <%= label_tag 'settings_slow_request_threshold_ms', l("settings.fields.label_slow_request_threshold_ms") %>
+      <%= number_field_tag 'settings[slow_request_threshold_ms]', @settings[:slow_request_threshold_ms], min: 0, step: 50 %>
+      <em class="info"><%= l("settings.fields.label_slow_request_threshold_ms_hint") %></em>
+    </p>
   </fieldset>
 </div>

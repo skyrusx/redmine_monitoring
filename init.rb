@@ -14,7 +14,9 @@ Redmine::Plugin.register :redmine_monitoring do
     max_errors: 10_000,
     retention_days: 90,
     log_levels: %w[fatal error warning],
-    enabled_formats: %w[HTML JSON]
+    enabled_formats: %w[HTML JSON],
+    enable_metrics: true,
+    slow_request_threshold_ms: 0
   }
 end
 
