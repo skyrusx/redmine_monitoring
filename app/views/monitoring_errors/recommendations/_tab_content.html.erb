@@ -1,0 +1,67 @@
+<div id="mm-tab-metrics" class="mm-tabpanel" style="display:block">
+  <p class="mm-subtitle"><i><%= label_hint("reco") %></i></p>
+
+  <table class="mm-table">
+    <thead>
+      <tr>
+        <th class="mm-col-collapse"></th>
+        <th class="mm-col-short"><%= l(:label_date) %></th>
+        <th><%= l(:label_endpoint) %></th>
+        <th class="mm-col-short"><%= l(:label_category) %></th>
+        <th class="mm-col-short"><%= l(:label_kind) %></th>
+        <th><%= l(:label_message) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @recommendations.records.each_with_index do |reco, index| %>
+        <tr class="mm-row error-row" data-target="details-<%= index %>">
+          <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
+          <td class="mm-col-short"><%= reco.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td><span class="mm-mono"><%= reco.controller_name %>#<%= reco.action_name %></span></td>
+          <td class="mm-col-short"><span class="mm-badge"><%= reco_category(reco.category.to_sym) %></span></td>
+          <td class="mm-col-short"><span class="mm-badge"><%= reco_kind(reco.kind) %></span></td>
+          <td class="mm-ellipsis" title="<%= reco.message %>"><%= truncate(reco.message, length: 80) %></td>
+        </tr>
+
+        <tr id="details-<%= index %>" class="details-row" style="display:none;">
+          <td colspan="6">
+            <div class="mm-details">
+              <div class="mm-kv"><span><%= l(:label_source) %></span><code><%= reco.source %></code></div>
+              <div class="mm-kv"><span><%= l(:label_full_path) %></span><code><%= reco.path %></code></div>
+              <div class="mm-kv"><span><%= l(:label_user) %></span><code><%= user_info(reco.user) %></code></div>
+
+              <div class="mm-block">
+                <div class="mm-block__title"><%= l(:label_message) %></div>
+                <div class="mm-code">
+                  <div class="mm-code__header">
+                    <span><%= l(:label_code) %></span>
+                    <button class="mm-copy-btn" data-target="message-<%= index %>">
+                      <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                      <%= l(:label_copy) %>
+                    </button>
+                  </div>
+                  <div class="mm-code__body">
+                    <pre id="message-<%= index %>"><code><%= reco.message %></code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mm-pagination">
+    <div class="mm-pagination-links">
+      <%= pagination_links_full @recommendations.paginator, @recommendations.count %>
+    </div>
+
+    <div class="mm-pagination-perpage">
+      <span><%= l(:label_per_page) %></span>
+      <% Setting.per_page_options_array.each do |per_page| %>
+        <%= link_to per_page, monitoring_path_with(per_page: per_page), class: "mm-page-size #{'is-active' if per_page == @recommendations.paginator.per_page}" %>
+      <% end %>
+    </div>
+  </div>
+</div>

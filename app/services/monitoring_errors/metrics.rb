@@ -12,7 +12,7 @@ module MonitoringErrors
       @paginator = Redmine::Pagination::Paginator.new(@count, @limit, page)
       @offset = @paginator.offset
 
-      @records = scope.offset(@offset).limit(@paginator.per_page)
+      @records = scope.includes(:user).offset(@offset).limit(@paginator.per_page)
     end
   end
 end

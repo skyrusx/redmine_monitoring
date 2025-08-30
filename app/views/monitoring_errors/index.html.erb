@@ -10,6 +10,9 @@
   <%= link_to l(:label_tab_metrics), monitoring_tab_path('metrics'), class: "mm-tab #{'is-active' if current_tab == 'metrics'}" %>
   <%= link_to l(:label_tab_errors), monitoring_tab_path('errors'), class: "mm-tab #{'is-active' if current_tab == 'errors'}" %>
   <%= link_to l(:label_tab_groups), monitoring_tab_path('groups'), class: "mm-tab #{'is-active' if current_tab == 'groups'}" %>
+  <% if dev_mode? %>
+    <%= link_to l(:label_tab_recommendations), monitoring_tab_path('recommendations'), class: "mm-tab #{'is-active' if current_tab == 'recommendations'}" %>
+  <% end %>
 
   <% if lookup_context.exists?("monitoring_errors/#{current_tab}/actions", [], true) %>
     <%= render partial: "monitoring_errors/#{current_tab}/actions" %>

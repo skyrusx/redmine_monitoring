@@ -18,7 +18,7 @@
   </div>
 
   <div class="mm-field">
-    <%= f.select :user_id, options_from_collection_for_select(@lister.filters[:users], :id, :login, params[:user_id]), { include_blank: l(:label_select_user) }, { class: "monitoring-select2" } %>
+    <%= f.select :user_id, options_from_collection_for_select(@lister.filters[:users], :id, :name, params[:user_id]), { include_blank: l(:label_select_user) }, { class: "monitoring-select2" } %>
   </div>
 </div>
 

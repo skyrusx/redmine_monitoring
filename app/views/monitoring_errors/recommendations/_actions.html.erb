@@ -1,6 +1,6 @@
 <div class="mm-actions">
   <% if dev_mode? %>
-    <%= link_to l(:label_add_test_error), monitoring_test_error_path(tab: current_tab), class: 'mm-btn mm-btn--primary' %>
+    <%= link_to l(:label_add_test_reco), monitoring_test_reco_path(tab: current_tab), class: 'mm-btn mm-btn--primary' %>
   <% end %>
   <%= button_to l("label_delete_#{current_tab}"), monitoring_clear_path(tab: current_tab), method: :post,
                 data: { confirm: l("notices.confirm.#{current_tab}") },

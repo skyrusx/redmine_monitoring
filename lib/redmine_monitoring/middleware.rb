@@ -9,6 +9,11 @@ module RedmineMonitoring
     end
 
     def call(env)
+      cur = RedmineMonitoring::BulletIntegration::Current
+      req = ActionDispatch::Request.new(env)
+      cur.path = safe_fullpath(req)
+      cur.user_id = safe_current_user_id
+
       status = nil
       status, headers, response = @app.call(env)
 
@@ -22,11 +27,12 @@ module RedmineMonitoring
       log_exception(e, env)
       reporter.save(env: env, exception: e, severity: severity)
       raise
+    ensure
+      # очищаем контекст после Bullet::Rack
+      RedmineMonitoring::BulletIntegration::Current.reset_all
     end
 
     private
-
-    # --- Logging
 
     def log_exception(exception, env)
       monitoring_logger.error "[Monitoring] #{exception.class}: #{exception.message}"
@@ -44,6 +50,23 @@ module RedmineMonitoring
 
     def reporter
       @reporter ||= RedmineMonitoring::ErrorReporter.new(logger: monitoring_logger)
+    end
+
+    def safe_fullpath(request)
+      request.fullpath.to_s[0, 2048]
+    rescue StandardError
+      ''
+    end
+
+    def safe_current_user_id
+      user = User.current
+
+      return nil unless user
+      return nil if user.respond_to?(:anonymous?) && user.anonymous?
+
+      user.id
+    rescue StandardError
+      nil
     end
   end
 end

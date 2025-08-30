@@ -17,8 +17,7 @@ module MonitoringErrors
     def self.safe_params(params)
       return {} unless params
 
-      hash = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params.to_h
-      hash.except(:controller, :action)
+      params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params.to_h
     rescue StandardError
       {}
     end

@@ -20,22 +20,28 @@ en:
 
   notices:
     test_error: "Test error created successfully"
+    test_n_plus_one: "Test N+1 recommendation created for Bullet"
     clear:
       errors: "All errors have been successfully cleared"
       metrics: "All metrics have been successfully cleared"
     check_monitoring_enabled: "Monitoring is disabled"
-    confirm: "Are you sure you want to delete all errors?"
+    confirm:
+      metrics: "Are you sure you want to delete all metrics?"
+      errors: "Are you sure you want to delete all errors?"
+      recommendations: "Are you sure you want to delete all recommendations?"
 
   label_monitoring: "Monitoring"
   label_list_errors: "Error list"
 
   label_add_test_error: "Create test error"
+  label_add_test_reco: "Create test recommendation"
   label_clear: "Clear"
   label_hint: "Click on the %{type} row to see more details."
   label_hint_types:
     errors: "errors"
     metrics: "metrics"
     groups: "groups"
+    reco: "recommendations"
   label_date: "Date"
   label_endpoint: "Controller#action"
   label_error_class: "Error class"
@@ -75,11 +81,15 @@ en:
   label_bytes_sent: "Bytes sent, B/KB"
   label_first_seen_at: "First seen"
   label_last_seen_at: "Last seen"
+  label_category: "Category"
+  label_kind: "Kind"
+  label_source: "Source"
   label_total: "Total"
   label_code: "Code"
   label_copy: "Copy"
   label_delete_errors: "Delete errors"
   label_delete_metrics: "Delete metrics"
+  label_delete_recommendations: "Delete recommendations"
   label_per_page: "Per page:"
   label_no: "no"
   label_not_active: "Not active"
@@ -141,6 +151,7 @@ en:
   label_tab_metrics: "Metrics"
   label_tab_errors: "Errors"
   label_tab_groups: "Error groups"
+  label_tab_recommendations: "Recommendations"
 
   # Dashboard
   label_dashboard_hint: "Overall statistics for the last 7 days"
@@ -160,3 +171,11 @@ en:
   label_fake_message: "created object `MonitoringError` for #<#<Class:0x00007f8007305e10>:0x00007f800730c080>"
   label_fake_controller_name: "MonitoringErrorsController"
   label_fake_action_name: "test_error"
+
+  label_reco_categories:
+    performance: "Производительность"
+
+  label_reco_kinds:
+    n_plus_one: "N+1 запрос"
+    unused_eager_loading: "Неиспользованная предзагрузка"
+    counter_cache: "Счётчик (counter cache)"

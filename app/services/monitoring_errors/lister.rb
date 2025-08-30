@@ -15,7 +15,8 @@ module MonitoringErrors
     private
 
     def build_records(scope)
-      scope.order(created_at: :desc)
+      scope.includes(:user)
+           .order(created_at: :desc)
            .offset(@paginator.offset)
            .limit(@paginator.per_page)
     end
@@ -63,7 +64,10 @@ module MonitoringErrors
     end
 
     def users
-      User.where(id: MonitoringError.distinct.pluck(:user_id).compact)
+      user_ids = MonitoringError.distinct.pluck(:user_id).compact
+      return [] if user_ids.empty?
+
+      User.where(id: user_ids).order(:login).to_a
     end
 
     def severities

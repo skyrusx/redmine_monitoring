@@ -1,5 +1,6 @@
 require_relative 'lib/redmine_monitoring/constants'
 require_relative 'lib/redmine_monitoring/request_subscriber'
+require_relative 'lib/redmine_monitoring/bullet_integration'
 
 default_settings = RedmineMonitoring::Constants::DEFAULT_SETTINGS
 
@@ -23,5 +24,6 @@ Redmine::Plugin.register :redmine_monitoring do
   }
 end
 
-Rails.application.config.middleware.use RedmineMonitoring::Middleware
+Rails.application.config.middleware.insert_before Bullet::Rack, RedmineMonitoring::Middleware
 RedmineMonitoring::RequestSubscriber.attach!
+RedmineMonitoring::BulletIntegration.attach!

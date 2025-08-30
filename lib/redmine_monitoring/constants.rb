@@ -38,6 +38,8 @@ module RedmineMonitoring
       pdf: :label_export_pdf
     }.freeze
 
+    AVAILABLE_EXPORT_FORMATS = EXPORT_FORMATS.keys.freeze
+
     DURATION_UNITS = {
       years: 365 * 24 * 3600,
       months: 30 * 24 * 3600,
