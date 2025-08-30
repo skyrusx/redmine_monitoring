@@ -2,7 +2,7 @@ class MonitoringRequest < ApplicationRecord
   belongs_to :user, optional: true
 
   def self.normalize_path(path, method: :get, use_cache: !Rails.env.development?)
-    return "" if path.blank?
+    return '' if path.blank?
 
     if use_cache
       cache_key = "monitoring:norm:v1:#{method.to_s.upcase}:#{path}"
@@ -27,7 +27,7 @@ class MonitoringRequest < ApplicationRecord
     end
 
     spec.presence
-  rescue => e
+  rescue StandardError => e
     Rails.logger.debug { "[Monitoring] normalize_path_via_router failed: #{e.class}: #{e.message}" }
     nil
   end

@@ -1,32 +1,42 @@
 class CreateMonitoringRequests < ActiveRecord::Migration[5.2]
   def change
-    create_table :monitoring_requests do |t|
-      t.string :method
-      t.text :path
-      t.string :normalized_path
-      t.string :controller_name
-      t.string :action_name
-      t.string :format
-      t.integer :status_code
-      t.integer :duration_ms
-      t.integer :view_ms
-      t.integer :db_ms
-      t.bigint :bytes_sent
-      t.string :ip_address
-      t.text :user_agent
-      t.text :referer
-      t.string :env
-      t.references :user, foreign_key: true, index: true, null: true
-      t.timestamps
+    create_table :monitoring_requests do |table|
+      add_request_columns(table)
+      table.timestamps
     end
 
+    add_request_indexes
+  end
+
+  private
+
+  def add_request_columns(table)
+    table.string :method
+    table.text :path
+    table.string :normalized_path
+    table.string :controller_name
+    table.string :action_name
+    table.string :format
+    table.integer :status_code
+    table.integer :duration_ms
+    table.integer :view_ms
+    table.integer :db_ms
+    table.bigint :bytes_sent
+    table.string :ip_address
+    table.text :user_agent
+    table.text :referer
+    table.string :env
+    table.references :user, foreign_key: true, index: true, null: true
+  end
+
+  def add_request_indexes
     add_index :monitoring_requests, :created_at
     add_index :monitoring_requests, :status_code
     add_index :monitoring_requests, :duration_ms
-    add_index :monitoring_requests, [:controller_name, :action_name]
+    add_index :monitoring_requests, %i[controller_name action_name]
     add_index :monitoring_requests, :normalized_path
-    add_index :monitoring_requests, [:normalized_path, :created_at]
-    add_index :monitoring_requests, [:status_code, :created_at]
+    add_index :monitoring_requests, %i[normalized_path created_at]
+    add_index :monitoring_requests, %i[status_code created_at]
     add_index :monitoring_requests, :format
     add_index :monitoring_requests, :env
   end

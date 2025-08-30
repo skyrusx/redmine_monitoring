@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require 'progress_bar'
 
 namespace :redmine_monitoring do
-  desc "Cleanup monitoring errors"
+  desc 'Cleanup monitoring errors'
   task cleanup: :environment do
     model = MonitoringError
-    days = (Setting.plugin_redmine_monitoring["retention_days"] || model.retention_days).to_i
+    days = (Setting.plugin_redmine_monitoring['retention_days'] || model.retention_days).to_i
     batch_size = 1000
 
     if days <= 0

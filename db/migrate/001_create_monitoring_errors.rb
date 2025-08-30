@@ -1,27 +1,37 @@
 class CreateMonitoringErrors < ActiveRecord::Migration[5.2]
   def change
-    create_table :monitoring_errors do |t|
-      t.string :exception_class
-      t.string :error_class
-      t.text :message
-      t.text :backtrace
-      t.string :severity
-      t.string :controller_name
-      t.string :action_name
-      t.string :file
-      t.integer :line
-      t.integer :status_code
-      t.string :format
-      t.string :ip_address
-      t.string :user_agent
-      t.string :referer
-      t.text :params
-      t.text :headers
-      t.text :env
-      t.references :user, foreign_key: true, index: true, null: true
-      t.timestamps
+    create_table :monitoring_errors do |table|
+      add_request_columns(table)
+      table.timestamps
     end
 
+    add_request_indexes
+  end
+
+  private
+
+  def add_request_columns(table)
+    table.string :exception_class
+    table.string :error_class
+    table.text :message
+    table.text :backtrace
+    table.string :severity
+    table.string :controller_name
+    table.string :action_name
+    table.string :file
+    table.integer :line
+    table.integer :status_code
+    table.string :format
+    table.string :ip_address
+    table.string :user_agent
+    table.string :referer
+    table.text :params
+    table.text :headers
+    table.text :env
+    table.references :user, foreign_key: true, index: true, null: true
+  end
+
+  def add_request_indexes
     add_index :monitoring_errors, :created_at
     add_index :monitoring_errors, :exception_class
     add_index :monitoring_errors, :controller_name

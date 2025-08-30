@@ -80,8 +80,18 @@ en:
   label_copy: "Copy"
   label_delete_errors: "Delete errors"
   label_delete_metrics: "Delete metrics"
-
   label_per_page: "Per page:"
+  label_no: "no"
+  label_not_active: "Not active"
+  label_active: "Active"
+
+  label_short_year: "yr"
+  label_short_month: "mo"
+  label_short_day: "d"
+  label_short_hour: "h"
+  label_short_minute: "min"
+  label_short_second: "sec"
+
   label_export_to: "Export to"
   label_export_csv: "CSV"
   label_export_json: "JSON"
@@ -144,3 +154,9 @@ en:
 
   label_top_urls: "Top problematic URLs"
   label_top_users: "Top users"
+
+  label_fake_exception_class: "TestError"
+  label_fake_error_class: "TestError"
+  label_fake_message: "created object `MonitoringError` for #<#<Class:0x00007f8007305e10>:0x00007f800730c080>"
+  label_fake_controller_name: "MonitoringErrorsController"
+  label_fake_action_name: "test_error"

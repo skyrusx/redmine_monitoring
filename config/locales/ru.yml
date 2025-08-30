@@ -81,6 +81,16 @@ ru:
   label_delete_errors: "Удалить ошибки"
   label_delete_metrics: "Удалить метрики"
   label_per_page: "На страницу:"
+  label_no: "нет"
+  label_not_active: "Не активна"
+  label_active: "Активна"
+
+  label_short_year: "год"
+  label_short_month: "мес"
+  label_short_day: "д"
+  label_short_hour: "ч"
+  label_short_minute: "мин"
+  label_short_second: "сек"
 
   label_export_to: "Экспортировать в"
   label_export_csv: "CSV"
@@ -144,3 +154,9 @@ ru:
 
   label_top_urls: "Топ проблемных URL"
   label_top_users: "Топ пользователей"
+
+  label_fake_exception_class: "TestError"
+  label_fake_error_class: "TestError"
+  label_fake_message: "created object `MonitoringError` for #<#<Class:0x00007f8007305e10>:0x00007f800730c080>"
+  label_fake_controller_name: "MonitoringErrorsController"
+  label_fake_action_name: "test_error"
