@@ -21,7 +21,7 @@
       <em class="info"><%= l("settings.fields.label_max_errors_hint") %></em>
     </p>
     <p>
-      <%= label_tag 'settings_max_errors', l("settings.fields.label_retention_days") %>
+      <%= label_tag 'settings_retention_days', l("settings.fields.label_retention_days") %>
       <%= number_field_tag 'settings[retention_days]', @settings[:retention_days] || 90, min: 1, step: 1 %>
       <em class="info"><%= l("settings.fields.label_retention_days_hint") %></em>
     </p>
@@ -42,7 +42,7 @@
       <em class="info"><%= l("settings.fields.label_enabled_formats_hint") %></em>
     </p>
     <p>
-      <%= label_tag 'settings_enabled_formats', l("settings.fields.label_enable_metrics") %>
+      <%= label_tag 'settings_enable_metrics', l("settings.fields.label_enable_metrics") %>
       <%= check_box_tag 'settings[enable_metrics]', true, @settings[:enable_metrics] %>
     </p>
     <p>
