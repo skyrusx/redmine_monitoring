@@ -179,3 +179,4 @@ ru:
     n_plus_one: "N+1 запрос"
     unused_eager_loading: "Неиспользованная предзагрузка"
     counter_cache: "Счётчик (counter cache)"
+    other: "Другое"
