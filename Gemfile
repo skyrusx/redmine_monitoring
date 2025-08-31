@@ -7,6 +7,7 @@ gem 'select2-rails'
 
 group :development, :test do
   gem 'bullet'
+  gem 'letter_opener_web'
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
