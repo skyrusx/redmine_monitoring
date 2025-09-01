@@ -5,7 +5,7 @@
 
 <div class="settings-redmine-monitoring">
   <fieldset>
-    <legend><%= l("settings.label_title") %></legend>
+    <legend><b><%= l("settings.label_title") %></b></legend>
 
     <p>
       <%= label_tag 'settings_enabled', l("settings.fields.label_enabled") %>
@@ -15,40 +15,115 @@
       <%= label_tag 'settings_dev_mode', l("settings.fields.label_dev_mode") %>
       <%= check_box_tag 'settings[dev_mode]', true, @settings[:dev_mode] %>
     </p>
-    <p>
-      <%= label_tag 'settings_max_errors', l("settings.fields.label_max_errors") %>
-      <%= number_field_tag 'settings[max_errors]', @settings[:max_errors] || 10_000, min: 100, max: 1_000_000, step: 100 %>
-      <em class="info"><%= l("settings.fields.label_max_errors_hint") %></em>
-    </p>
-    <p>
-      <%= label_tag 'settings_retention_days', l("settings.fields.label_retention_days") %>
-      <%= number_field_tag 'settings[retention_days]', @settings[:retention_days] || 90, min: 1, step: 1 %>
-      <em class="info"><%= l("settings.fields.label_retention_days_hint") %></em>
-    </p>
-    <p>
-      <%= label_tag 'settings_log_levels', l("settings.fields.label_log_levels") %>
-      <% options = RedmineMonitoring::Constants::SEVERITIES.map { |severity| [severity.titleize, severity] } %>
-      <%= select_tag 'settings[log_levels][]',
-                     options_for_select(options, @settings[:log_levels]),
-                     multiple: true, size: 3, class: 'monitoring-select2', data: { placeholder: l(:label_select_log_levels) } %>
-      <em class="info"><%= l("settings.fields.label_log_levels_hint") %></em>
-    </p>
-    <p>
-      <%= label_tag 'settings_enabled_formats', l("settings.fields.label_enabled_formats") %>
-      <% formats = RedmineMonitoring::Constants::ENABLED_FORMATS %>
-      <%= select_tag 'settings[enabled_formats][]',
-                     options_for_select(formats, @settings[:enabled_formats]),
-                     multiple: true, size: 6, class: 'monitoring-select2', data: { placeholder: l(:label_select_enabled_formats) } %>
-      <em class="info"><%= l("settings.fields.label_enabled_formats_hint") %></em>
-    </p>
-    <p>
-      <%= label_tag 'settings_enable_metrics', l("settings.fields.label_enable_metrics") %>
-      <%= check_box_tag 'settings[enable_metrics]', true, @settings[:enable_metrics] %>
-    </p>
-    <p>
-      <%= label_tag 'settings_slow_request_threshold_ms', l("settings.fields.label_slow_request_threshold_ms") %>
-      <%= number_field_tag 'settings[slow_request_threshold_ms]', @settings[:slow_request_threshold_ms], min: 0, step: 50 %>
-      <em class="info"><%= l("settings.fields.label_slow_request_threshold_ms_hint") %></em>
-    </p>
+
+    <fieldset>
+      <legend><b><%= l(:label_tab_metrics) %></b></legend>
+
+      <p>
+        <%= label_tag 'settings_enable_metrics', l("settings.fields.label_enable_metrics") %>
+        <%= check_box_tag 'settings[enable_metrics]', true, @settings[:enable_metrics] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_slow_request_threshold_ms', l("settings.fields.label_slow_request_threshold_ms") %>
+        <%= number_field_tag 'settings[slow_request_threshold_ms]', @settings[:slow_request_threshold_ms], min: 0, step: 50 %>
+        <em class="info"><%= l("settings.fields.label_slow_request_threshold_ms_hint") %></em>
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend><b><%= l(:label_tab_errors) %></b></legend>
+
+      <p>
+        <%= label_tag 'settings_max_errors', l("settings.fields.label_max_errors") %>
+        <%= number_field_tag 'settings[max_errors]', @settings[:max_errors] || 10_000, min: 100, max: 1_000_000, step: 100 %>
+        <em class="info"><%= l("settings.fields.label_max_errors_hint") %></em>
+      </p>
+      <p>
+        <%= label_tag 'settings_retention_days', l("settings.fields.label_retention_days") %>
+        <%= number_field_tag 'settings[retention_days]', @settings[:retention_days] || 90, min: 1, step: 1 %>
+        <em class="info"><%= l("settings.fields.label_retention_days_hint") %></em>
+      </p>
+      <p>
+        <%= label_tag 'settings_log_levels', l("settings.fields.label_log_levels") %>
+        <% options = RedmineMonitoring::Constants::SEVERITY_DATA.map { |key, value| [value[:label], key] } %>
+        <%= select_tag 'settings[log_levels][]',
+                       options_for_select(options, @settings[:log_levels]),
+                       multiple: true, size: 3, class: 'monitoring-select2', data: { placeholder: l(:label_select_log_levels) } %>
+        <em class="info"><%= l("settings.fields.label_log_levels_hint") %></em>
+      </p>
+      <p>
+        <%= label_tag 'settings_enabled_formats', l("settings.fields.label_enabled_formats") %>
+        <% formats = RedmineMonitoring::Constants::ENABLED_FORMATS %>
+        <%= select_tag 'settings[enabled_formats][]',
+                       options_for_select(formats, @settings[:enabled_formats]),
+                       multiple: true, size: 6, class: 'monitoring-select2', data: { placeholder: l(:label_select_enabled_formats) } %>
+        <em class="info"><%= l("settings.fields.label_enabled_formats_hint") %></em>
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend><b><%= l(:label_tab_alerts) %></b></legend>
+
+      <p>
+        <%= label_tag 'settings_notify_enabled', l("settings.fields.label_notify_enabled") %>
+        <%= check_box_tag 'settings[notify_enabled]', true, @settings[:notify_enabled] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_channels', l("settings.fields.label_notify_channels") %>
+        <% options = RedmineMonitoring::Constants::NOTIFY_CHANNELS.map { |channel| [channel.titleize, channel] } %>
+        <%= select_tag 'settings[notify_channels][]',
+                       options_for_select(options, @settings[:notify_channels]),
+                       multiple: true, size: 2, class: 'monitoring-select2', data: { placeholder: l(:label_select_notify_channels) } %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_severity_min', l("settings.fields.label_notify_severity_min") %>
+        <% options = RedmineMonitoring::Constants::SEVERITY_DATA.map { |key, value| [value[:label], key] } %>
+        <%= select_tag 'settings[notify_severity_min]',
+                       options_for_select(options, @settings[:notify_severity_min]),
+                       include_blank: true,
+                       class: 'monitoring-select2',
+                       data: { placeholder: l(:label_select_notify_severity_min) } %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_formats', l("settings.fields.label_notify_formats") %>
+        <% formats = RedmineMonitoring::Constants::ENABLED_FORMATS %>
+        <%= select_tag 'settings[notify_formats][]',
+                       options_for_select(formats, @settings[:notify_formats]),
+                       multiple: true, size: 6, class: 'monitoring-select2', data: { placeholder: l(:label_select_enabled_formats) } %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_email_recipients', l("settings.fields.label_notify_email_recipients") %>
+        <%
+          options = User.active.where(admin: true).order(:id).map do |user|
+            ["#{user.name} (#{user.mail})", user.mail] if user.mail.include?("mosreg.ru")
+          end.compact.uniq
+        %>
+        <%= select_tag 'settings[notify_email_recipients]',
+                       options_for_select(options, @settings[:notify_email_recipients]),
+                       include_blank: true,
+                       class: 'monitoring-select2',
+                       data: { placeholder: l(:label_select_notify_email_recipients) } %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_telegram_bot_token', l("settings.fields.label_notify_telegram_bot_token") %>
+        <%= password_field_tag 'settings[notify_telegram_bot_token]', @settings[:notify_telegram_bot_token], size: 83 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_telegram_chat_ids', l("settings.fields.label_notify_telegram_chat_ids") %>
+        <%= text_area_tag 'settings[notify_telegram_chat_ids]', @settings[:notify_telegram_chat_ids], rows: 4, cols: 83 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_include_backtrace_lines', l("settings.fields.label_notify_include_backtrace_lines") %>
+        <%= number_field_tag 'settings[notify_include_backtrace_lines]', @settings[:notify_include_backtrace_lines], min: 0, step: 1 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_grouping_window_sec', l("settings.fields.label_notify_grouping_window_sec") %>
+        <%= number_field_tag 'settings[notify_grouping_window_sec]', @settings[:notify_grouping_window_sec], min: 10, step: 10 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_notify_throttle_per_group_per_min', l("settings.fields.label_notify_throttle_per_group_per_min") %>
+        <%= number_field_tag 'settings[notify_throttle_per_group_per_min]', @settings[:notify_throttle_per_group_per_min], min: 1, step: 1 %>
+      </p>
+    </fieldset>
   </fieldset>
 </div>

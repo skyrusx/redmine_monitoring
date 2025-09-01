@@ -2,6 +2,8 @@
 
 module MonitoringErrors
   module HtmlHelper
+    include RedmineMonitoring::Constants
+
     def page_title(main, current)
       [main, current].join(' » ')
     end
@@ -26,20 +28,32 @@ module MonitoringErrors
       I18n.t('label_hint', type: I18n.t("label_hint_types.#{type}"))
     end
 
-    def dev_mode?
-      settings = Setting.plugin_redmine_monitoring || {}
-      value = settings['dev_mode'] || settings[:dev_mode]
-      ActiveModel::Type::Boolean.new.cast(value)
-    rescue StandardError
-      false
-    end
-
     def reco_category(value)
       I18n.t("label_reco_categories.#{value}")
     end
 
     def reco_kind(value)
       I18n.t("label_reco_kinds.#{value}")
+    end
+
+    def channel_status_class(value)
+      CHANNEL_STATUSES[value.to_sym][:css] || 'status-unknown'
+    end
+
+    def channel_status_label(value)
+      CHANNEL_STATUSES[value.to_sym][:label] || value.to_s.humanize
+    end
+
+    def severity_label(value)
+      SEVERITY_DATA[value.to_sym][:label] || value.to_s.humanize
+    end
+
+    def severity_class(value)
+      SEVERITY_DATA[value.to_sym][:css] || 'severity-unknown'
+    end
+
+    def monitoring_dev_mode?
+      RedmineMonitoring::Env.dev_mode?
     end
   end
 end

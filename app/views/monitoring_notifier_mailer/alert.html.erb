@@ -1,0 +1,7 @@
+<h3><%= @payload[:headline] %></h3>
+<p>
+  <b>Уровень:</b> <%= RedmineMonitoring::Constants::SEVERITY_DATA[@payload[:severity].to_sym][:label] %> | <b>Статус / формат:</b> <%= @payload[:status] %> / <%= @payload[:format] %>
+</p>
+<p><b>Сообщение:</b> <%= @payload[:snippet] %></p>
+<pre><%= @payload[:backtrace].first(@payload[:backtrace_limit] || 10).join("\n") %></pre>
+

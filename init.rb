@@ -1,3 +1,4 @@
+require_relative 'lib/redmine_monitoring/env'
 require_relative 'lib/redmine_monitoring/constants'
 require_relative 'lib/redmine_monitoring/request_subscriber'
 require_relative 'lib/redmine_monitoring/bullet_integration'
@@ -20,7 +21,17 @@ Redmine::Plugin.register :redmine_monitoring do
     log_levels: default_settings[:log_levels],
     enabled_formats: default_settings[:enabled_formats],
     enable_metrics: default_settings[:enable_metrics],
-    slow_request_threshold_ms: default_settings[:slow_request_threshold_ms]
+    slow_request_threshold_ms: default_settings[:slow_request_threshold_ms],
+    notify_enabled: default_settings[:notify_enabled],
+    notify_channels: default_settings[:notify_channels],
+    notify_severity_min: default_settings[:notify_severity_min],
+    notify_formats: default_settings[:notify_formats],
+    notify_email_recipients: default_settings[:notify_email_recipients],
+    notify_telegram_bot_token: default_settings[:notify_telegram_bot_token],
+    notify_telegram_chat_ids: default_settings[:notify_telegram_chat_ids],
+    notify_include_backtrace_lines: default_settings[:notify_include_backtrace_lines],
+    notify_grouping_window_sec: default_settings[:notify_grouping_window_sec],
+    notify_throttle_per_group_per_min: default_settings[:notify_throttle_per_group_per_min]
   }
 end
 

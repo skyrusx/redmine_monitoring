@@ -17,6 +17,16 @@ ru:
       label_enable_metrics: "Включить сбор метрик запросов"
       label_slow_request_threshold_ms: "Порог медленного запроса (мс)"
       label_slow_request_threshold_ms_hint: "Метрики запросов собираются только при превышении заданного порога."
+      label_notify_enabled: "Включить уведомления"
+      label_notify_channels: "Каналы"
+      label_notify_severity_min: "Минимальный порог уровня"
+      label_notify_formats: "Форматы"
+      label_notify_email_recipients: "Email получатели"
+      label_notify_telegram_bot_token: "Токен Telegram-бота"
+      label_notify_telegram_chat_ids: "Идентификаторы чата Telegram"
+      label_notify_include_backtrace_lines: "Строк в письме [Backtrace]"
+      label_notify_grouping_window_sec: "Окно группировки (сек)"
+      label_notify_throttle_per_group_per_min: "Лимит уведомлений на группу (в минуту)"
 
   notices:
     test_error: "Тестовая ошибка успешно создана"
@@ -42,6 +52,7 @@ ru:
     metrics: "метрики"
     groups: "группы"
     reco: "рекомендации"
+    alerts: "уведомления"
   label_date: "Дата"
   label_endpoint: "Controller#action"
   label_error_class: "Класс ошибки"
@@ -53,6 +64,7 @@ ru:
   label_status: "Статус"
   label_env: "Окружение"
   label_backtrace: "Backtrace"
+  lable_backtrace_limit: "Backtrace (строк)"
   label_params: "Params"
   label_headers: "Headers"
   label_exception_class: "Класс исключения"
@@ -94,6 +106,17 @@ ru:
   label_no: "нет"
   label_not_active: "Не активна"
   label_active: "Активна"
+  label_errors_count: "Количество ошибок"
+  label_seen_at: "Появление (первое → последнее)"
+  label_last_notified_count: "Отправлено" # Отправлено уведомлений
+  label_window_started_at: "Начало окна"
+  label_channels: "Каналы"
+  label_channel: "Канал"
+  label_sent_count: "Количество отправок"
+  label_last_sent_at: "Последняя отправка"
+  label_last_error: "Последняя ошибка"
+  label_info_sent: "Отправленная информация"
+  label_subject: "Тема"
 
   label_short_year: "год"
   label_short_month: "мес"
@@ -120,6 +143,9 @@ ru:
   label_select_log_levels: "-- Выберите уровни --"
   label_select_severity: "-- Выберите уровень --"
   label_select_enabled_formats: "-- Выберите форматы --"
+  label_select_notify_channels: "-- Выберите каналы --"
+  label_select_notify_severity_min: "-- Выберите уровень --"
+  label_select_notify_email_recipients: "-- Выберите получателей --"
 
   label_pdf_title: "Мониторинг. Список ошибок"
   label_pdf_section_main: "Основная информация"
@@ -152,6 +178,7 @@ ru:
   label_tab_errors: "Ошибки"
   label_tab_groups: "Группы ошибок"
   label_tab_recommendations: "Рекомендации"
+  label_tab_alerts: "Уведомления"
 
   # Dashboard
   label_dashboard_hint: "Общая статистика за последние 7 дней"

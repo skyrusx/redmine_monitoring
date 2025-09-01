@@ -1,0 +1,118 @@
+<div id="mm-tab-alerts" class="mm-tabpanel" style="display: block">
+  <p class="mm-subtitle"><i><%= label_hint("alerts") %></i></p>
+
+  <div class="mm-card">
+    <table class="mm-table">
+      <thead>
+        <tr>
+          <th class="mm-col-collapse"></th>
+          <th class="mm-col-short"><%= l(:label_date) %></th>
+          <th class="mm-col-short"><%= l(:label_errors_count) %></th>
+          <th style="text-align: center"><%= l(:label_seen_at) %></th>
+          <th class="mm-col-short"><%= l(:label_last_notified_count) %></th>
+          <th class="mm-col-short"><%= l(:label_window_started_at) %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @alerts.records.each_with_index do |alert, index| %>
+          <tr class="mm-row error-row" data-target="details-<%= index %>">
+            <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
+            <td class="mm-col-short"><%= alert.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+            <td class="mm-col-short"><span class="mm-mono"><%= alert.errors_count %></span></td>
+            <td style="text-align: center">
+              <span class="mm-badge"><%= alert.first_seen_at.strftime("%Y-%m-%d %H:%M:%S") %> → <%= alert.last_seen_at.strftime("%Y-%m-%d %H:%M:%S") %></span>
+            </td>
+            <td class="mm-col-short"><%= alert.last_notified_count %></td>
+            <td class="mm-col-short"><%= alert.window_started_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          </tr>
+
+          <tr id="details-<%= index %>" class="details-row" style="display:none;">
+            <td colspan="6">
+              <div class="mm-details">
+                <% if alert.channels.present? %>
+                  <div class="mm-kv"><span><%= l(:label_channels) %></span></div>
+
+                  <div class="mm-kv">
+                    <table class="mm-table mm-table__nested">
+                      <thead>
+                      <tr>
+                        <th class="mm-col-short"><%= l(:label_created_at) %></th>
+                        <th class="mm-col-short"><%= l(:label_channel) %></th>
+                        <th class="mm-col-short"><%= l(:label_status) %></th>
+                        <th class="mm-col-short"><%= l(:label_sent_count) %></th>
+                        <th class="mm-col-short"><%= l(:label_last_sent_at) %></th>
+                        <th class="mm-col-medium"><%= l(:last_error) %></th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        <% alert.channels.each_with_index do |channel, i| %>
+                          <tr class="mm-row error-row" data-target="details-<%= index %>__<%= i %>">
+                            <td class="mm-col-short"><%= channel.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                            <td class="mm-col-short"><%= channel.channel.titleize %></td>
+                            <td class="mm-col-short">
+                              <span class="mm-badge mm-badge__<%= channel_status_class(channel.status) %>"><%= channel_status_label(channel.status) %></span>
+                            </td>
+                            <td class="mm-col-short"><%= channel.sent_count %></td>
+                            <td class="mm-col-short"><%= channel.last_sent_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+                            <td class="mm-col-medium" title="<%= channel.last_error %>"><%= truncate(channel.last_error, length: 80) %></td>
+                          </tr>
+                        <% end %>
+                      </tbody>
+                    </table>
+                  </div>
+                <% end %>
+
+                <div class="mm-kv"><span><%= l(:label_info_sent) %></span></div>
+
+                <div class="mm-kv"><span><%= l(:label_subject) %></span><code><%= alert.payload[:headline] %></code></div>
+                <div class="mm-kv">
+                  <span><%= l(:label_severity) %></span>
+                  <code>
+                    <span class="mm-badge mm-badge__<%= severity_class(alert.payload[:severity]) %>">
+                      <%= severity_label(alert.payload[:severity]).upcase %>
+                    </span>
+                  </code>
+                </div>
+                <div class="mm-kv">
+                  <span><%= l(:label_status) %> / <%= l(:label_format) %></span>
+                  <code><%= alert.payload[:status] %> / <%= alert.payload[:format] %></code>
+                </div>
+                <div class="mm-kv"><span><%= l(:label_message) %></span><code><%= alert.payload[:snippet] %></code></div>
+                <div class="mm-kv"><span><%= l(:lable_backtrace_limit) %></span><code><%= alert.payload[:backtrace_limit] %></code></div>
+
+                <div class="mm-block">
+                  <div class="mm-block__title"><%= l(:label_backtrace) %></div>
+                  <div class="mm-code">
+                    <div class="mm-code__header">
+                      <span><%= l(:label_code) %></span>
+                      <button class="mm-copy-btn" data-target="backtrace-<%= index %>">
+                        <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
+                        <%= l(:label_copy) %>
+                      </button>
+                    </div>
+                    <div class="mm-code__body">
+                      <pre id="backtrace-<%= index %>"><code><%= alert.payload[:backtrace].first(alert.payload[:backtrace_limit] || 10).join("\n") %></code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mm-pagination">
+    <div class="mm-pagination-links">
+      <%= pagination_links_full @alerts.paginator, @alerts.count %>
+    </div>
+
+    <div class="mm-pagination-perpage">
+      <span><%= l(:label_per_page) %></span>
+      <% Setting.per_page_options_array.each do |per_page| %>
+        <%= link_to per_page, monitoring_path_with(per_page: per_page), class: "mm-page-size #{'is-active' if per_page == @alerts.paginator.per_page}" %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -77,6 +77,11 @@
   border-spacing: 0;
 }
 
+.mm-table__nested {
+  border: 1px solid #ccc;
+  border-collapse: separate !important;
+}
+
 .mm-table thead th {
   background: #f8fafc;
   color: #374151;
@@ -156,30 +161,38 @@
   font-size: .85em;
 }
 
-.mm-badge__fatal {
+.mm-badge__fatal,
+.mm-badge__severity-fatal {
   background-color: #842029;
   color: #fff;
 }
 
-.mm-badge__2xx {
+.mm-badge__2xx,
+.mm-badge__status-delivered {
   background-color: #28a745;
   color: #fff;
 }
 
 .mm-badge__info,
-.mm-badge__3xx {
+.mm-badge__3xx,
+.mm-badge__status-new,
+.mm-badge__severity-info {
   background-color: #007bff;
   color: #fff;
 }
 
 .mm-badge__warning,
-.mm-badge__4xx {
+.mm-badge__4xx,
+.mm-badge__status-processing,
+.mm-badge__severity-warning {
   background-color: #ffc107;
   color: #fff;
 }
 
 .mm-badge__error,
-.mm-badge__5xx {
+.mm-badge__5xx,
+.mm-badge__status-failed,
+.mm-badge__severity-error {
   background-color: #dc3545;
   color: #fff;
 }

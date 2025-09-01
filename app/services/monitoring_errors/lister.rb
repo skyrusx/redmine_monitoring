@@ -2,6 +2,8 @@
 
 module MonitoringErrors
   class Lister
+    include RedmineMonitoring::Constants
+
     attr_reader :records, :paginator, :count, :limit, :filters
 
     def initialize(base_scope, limit, page)
@@ -71,7 +73,10 @@ module MonitoringErrors
     end
 
     def severities
-      MonitoringError.distinct.pluck(:severity).compact.sort
+      severities = MonitoringError.distinct.pluck(:severity).compact.sort
+      severities.map(&:to_sym)
+                .select { |severity| SEVERITY_DATA.key?(severity) }
+                .map { |severity| [SEVERITY_DATA[severity][:label], severity] }
     end
   end
 end

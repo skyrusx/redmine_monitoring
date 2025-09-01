@@ -1,5 +1,5 @@
 <div class="mm-actions">
-  <% if dev_mode? %>
+  <% if monitoring_dev_mode? %>
     <%= link_to l(:label_add_test_reco), monitoring_test_reco_path(tab: current_tab), class: 'mm-btn mm-btn--primary' %>
   <% end %>
   <%= button_to l("label_delete_#{current_tab}"), monitoring_clear_path(tab: current_tab), method: :post,

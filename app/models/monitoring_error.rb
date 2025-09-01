@@ -6,6 +6,7 @@ require_dependency 'monitoring_error_severity'
 require_dependency 'monitoring_error_formats'
 require_dependency 'monitoring_error_fingerprint'
 require_dependency 'monitoring_error_retention'
+require_dependency 'monitoring_error_notifications'
 
 class MonitoringError < ApplicationRecord
   include RedmineMonitoring::Constants
@@ -17,7 +18,7 @@ class MonitoringError < ApplicationRecord
   validates :severity, inclusion: { in: SEVERITIES }, allow_nil: true
 
   before_validation :assign_fingerprint, on: :create
-  after_commit :enforce_max_errors, :enforce_retention, on: :create
+  after_commit :enforce_max_errors, :enforce_retention, :enqueue_notification, on: :create
 
   include MonitoringErrorScopes
   include MonitoringErrorSettings
@@ -25,4 +26,5 @@ class MonitoringError < ApplicationRecord
   include MonitoringErrorFormats
   include MonitoringErrorFingerprint
   include MonitoringErrorRetention
+  include MonitoringErrorNotifications
 end

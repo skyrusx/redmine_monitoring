@@ -26,7 +26,7 @@
             <td class="mm-col-short"><%= error.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
             <td><span class="mm-mono"><%= endpoint(error) %></span></td>
             <td class="mm-col-short"><span class="mm-badge"><%= error_class(error) %></span></td>
-            <td class="mm-col-short"><span class="mm-badge mm-badge__<%= error.severity %>"><%= error.severity.titleize %></span></td>
+            <td class="mm-col-short"><span class="mm-badge mm-badge__<%= error.severity %>"><%= severity_label(error.severity) %></span></td>
             <td class="mm-ellipsis" title="<%= error.message %>"><%= truncate(error.message, length: 80) %></td>
           </tr>
 

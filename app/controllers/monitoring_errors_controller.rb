@@ -19,12 +19,13 @@ class MonitoringErrorsController < ApplicationController
     when 'metrics' then render_metrics
     when 'groups' then render_groups
     when 'recommendations' then render_recommendations
+    when 'alerts' then render_alerts
     else render_list_with_exports
     end
   end
 
   def test_error
-    return render_404 unless dev_mode?
+    return render_404 unless monitoring_dev_mode?
 
     format = safe_format(request)
     severity = MonitoringError.severity_for(nil, RuntimeError.new('test'))
@@ -43,7 +44,7 @@ class MonitoringErrorsController < ApplicationController
   end
 
   def test_reco
-    return render_404 unless dev_mode?
+    return render_404 unless monitoring_dev_mode?
 
     # намеренно делаем N+1: для каждой задачи читаем автора
     issues = Issue.limit(10).to_a
@@ -53,6 +54,21 @@ class MonitoringErrorsController < ApplicationController
     end
 
     redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t('notices.test_n_plus_one')
+  end
+
+  def test_alert
+    return render_404 unless monitoring_dev_mode?
+
+    format = safe_format(request)
+    severity = MonitoringError.severity_for(nil, RuntimeError.new('test'))
+
+    return redirect_to monitoring_errors_path unless MonitoringError.allow_severity?(severity)
+    return redirect_to monitoring_errors_path unless MonitoringError.allow_format?(format)
+
+    error = MonitoringErrors::Tester.call(request, severity)
+    RedmineMonitoring::Notifications::Dispatcher.new.call(error.id)
+
+    redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t('notices.test_alert')
   end
 
   private
@@ -70,8 +86,12 @@ class MonitoringErrorsController < ApplicationController
   end
 
   def render_recommendations
-    render_404 unless dev_mode?
+    render_404 unless monitoring_dev_mode?
     @recommendations = MonitoringErrors::Recommendations.new(per_page_param, params[:page])
+  end
+
+  def render_alerts
+    @alerts = MonitoringErrors::Alerts.new(per_page_param, params[:page])
   end
 
   def render_list_with_exports

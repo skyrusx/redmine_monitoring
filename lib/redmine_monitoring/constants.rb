@@ -8,7 +8,17 @@ module RedmineMonitoring
       log_levels: %w[fatal error warning],
       enabled_formats: %w[HTML JSON],
       enable_metrics: true,
-      slow_request_threshold_ms: 0
+      slow_request_threshold_ms: 0,
+      notify_enabled: true,
+      notify_channels: %w[email telegram],
+      notify_severity_min: 'error',
+      notify_formats: %w[html],
+      notify_email_recipients: '',
+      notify_telegram_bot_token: '',
+      notify_telegram_chat_ids: '',
+      notify_include_backtrace_lines: 10,
+      notify_grouping_window_sec: 300,
+      notify_throttle_per_group_per_min: 5
     }.freeze
 
     DEFAULT_BATCH_SIZE = 1_000
@@ -23,6 +33,7 @@ module RedmineMonitoring
     ENABLED_FORMATS = %w[HTML JSON CSV PDF XLSX XML].freeze
     USEFUL_HEADERS = %w[HTTP_USER_AGENT HTTP_REFERER HTTP_ACCEPT HTTP_ACCEPT_LANGUAGE HTTP_X_REQUESTED_WITH].freeze
     DATE_COLUMNS = %w[created_at updated_at].freeze
+    NOTIFY_CHANNELS = %w[email telegram].freeze
 
     MIME_TYPES = {
       csv: 'text/csv',
@@ -47,6 +58,20 @@ module RedmineMonitoring
       hours: 3600,
       minutes: 60,
       seconds: 1
+    }.freeze
+
+    CHANNEL_STATUSES = {
+      new: { label: 'Новый', css: 'status-new' },
+      processing: { label: 'В обработке', css: 'status-processing' },
+      delivered: { label: 'Доставлено', css: 'status-delivered' },
+      failed: { label: 'Ошибка', css: 'status-failed' }
+    }.freeze
+
+    SEVERITY_DATA = {
+      fatal: { label: 'Критическая ошибка', css: 'severity-fatal' },
+      error: { label: 'Ошибка', css: 'severity-error' },
+      warning: { label: 'Предупреждение', css: 'severity-warning' },
+      info: { label: 'Информация', css: 'severity-info' }
     }.freeze
 
     HTTP_STATUS_TEXT = {
