@@ -6,6 +6,7 @@ gem 'progress_bar'
 gem 'select2-rails'
 
 group :development, :test do
+  gem 'brakeman', require: false
   gem 'bullet', require: false
   gem 'letter_opener_web', require: false
   gem 'rubocop', require: false
