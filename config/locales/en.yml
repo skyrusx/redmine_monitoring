@@ -180,7 +180,6 @@ en:
   label_tab_recommendations: "Recommendations"
   label_tab_alerts: "Notifications"
 
-  # Dashboard
   label_dashboard_hint: "Overall statistics for the last 7 days"
   label_kpi_4xx: "Errors (4xx)"
   label_kpi_5xx: "Errors (5xx)"

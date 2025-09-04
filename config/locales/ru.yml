@@ -180,7 +180,6 @@ ru:
   label_tab_recommendations: "Рекомендации"
   label_tab_alerts: "Уведомления"
 
-  # Dashboard
   label_dashboard_hint: "Общая статистика за последние 7 дней"
   label_kpi_4xx: "Ошибок (4xx)"
   label_kpi_5xx: "Ошибок (5xx)"
