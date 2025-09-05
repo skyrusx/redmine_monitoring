@@ -1,0 +1,49 @@
+<div class="mm-kv"><h3><%= l(:label_security_subtitle_model_warnings) %></h3></div>
+
+<div class="mm-kv mm-scroll-x">
+  <table class="mm-table mm-table__nested">
+    <thead>
+      <tr>
+        <th class="mm-col-minimum"><%= l(:label_security_confidence) %></th>
+        <th><%= l(:label_security_model) %></th>
+        <th class="mm-col-short"><%= l(:label_security_warning_type) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_cwe_id) %></th>
+        <th><%= l(:label_security_message) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% warnings.each_with_index do |warning, i| %>
+        <tr class="mm-row error-row table-row__nested" data-target="details-<%= index %>__<%= i %>">
+          <td class="mm-col-minimum">
+            <span class="mm-badge mm-badge__<%= confidence_class(warning['confidence']) %>">
+              <%= confidence_label(warning['confidence']) %>
+            </span>
+          </td>
+          <td><%= warning['location']['model'] %></td>
+          <td class="mm-col-short">
+            <%= link_to "<span class='mm-badge'>#{warning['warning_type']}</span>".html_safe, warning['link'], target: '_blank' %>
+          </td>
+          <td class="mm-col-minimum"><%= warning['cwe_ids'] %></td>
+          <td title="<%= warning['message'] %>"><%= truncate(warning['message'], length: 80) %></td>
+        </tr>
+
+        <tr id="details-<%= index %>__<%= i %>" class="details-row" style="display:none;">
+          <td colspan="6">
+            <div class="mm-details">
+              <div class="mm-kv">
+                <span><%= l(:label_security_message) %></span>
+                <code><%= warning['message'] %> near line: <%= warning['line'] %> <%= warning['code'] %></code>
+              </div>
+              <div class="mm-kv"><span><%= l(:label_file) %></span><code class="mm-mono "><%= warning['file'] %></code></div>
+              <div class="mm-kv">
+                <span><%= l(:label_code) %></span>
+                <% hits = Array(warning['lines'] || warning['line']) %>
+                <%= code_block_from_file(file: warning['file'], line: hits, context: 3, lang: 'ruby', fallback: warning['code']) %>
+              </div>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

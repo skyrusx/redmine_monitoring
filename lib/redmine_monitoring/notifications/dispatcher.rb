@@ -6,28 +6,62 @@ module RedmineMonitoring
       include RedmineMonitoring::Constants
 
       def call(error_id)
-        settings = Setting.plugin_redmine_monitoring || {}
-        return unless truthy?(settings['notify_enabled'])
+        settings = fetch_settings
+        return unless notifications_enabled?(settings)
 
-        monitoring_error = MonitoringError.find(error_id)
-        return unless allowed_severity?(monitoring_error, settings)
-        return unless allowed_format?(monitoring_error, settings)
+        error = MonitoringError.find(error_id)
+        return unless allowed?(error, settings)
 
-        fingerprint = build_fingerprint(monitoring_error)
-        grouping_sec = settings.fetch('notify_grouping_window_sec', 300).to_i
+        fingerprint = build_fingerprint(error)
+        window_sec = grouping_seconds(settings)
 
-        manager = AlertWindowManager.new(fingerprint, monitoring_error, grouping_sec)
+        manager = AlertWindowManager.new(fingerprint, error, window_sec)
         alert_window = manager.upsert!
 
+        return if suppressed?(alert_window, settings)
         return if throttled?(fingerprint, settings)
 
-        Deliverer.new(alert_window, monitoring_error, settings).deliver!
-        manager.mark_notified!(alert_window)
+        Deliverer.new(alert_window, error, settings).deliver!
+        manager.mark_notified!(alert: alert_window)
       rescue StandardError => e
         Rails.logger.error "[Monitoring][notify] #{e.class}: #{e.message}"
       end
 
       private
+
+      def fetch_settings
+        Setting.plugin_redmine_monitoring || {}
+      end
+
+      def notifications_enabled?(settings)
+        truthy?(settings['notify_enabled'])
+      end
+
+      def allowed?(error, settings)
+        allowed_severity?(error, settings) && allowed_format?(error, settings)
+      end
+
+      def grouping_seconds(settings)
+        settings.fetch('notify_grouping_window_sec', 300).to_i
+      end
+
+      def delivery_channels(settings)
+        Array(settings['notify_channels']).map(&:to_s)
+      end
+
+      def suppressed?(alert_window, settings)
+        suppressed_by_window?(alert_window, delivery_channels(settings), grouping_seconds(settings))
+      end
+
+      def suppressed_by_window?(alert_window, delivery_channels, grouping_window_seconds)
+        window_seconds = grouping_window_seconds.to_i
+        return false if window_seconds <= 0
+
+        cutoff_time = Time.current - window_seconds
+
+        MonitoringAlertChannel.where(monitoring_alert_id: alert_window.id, channel: delivery_channels)
+                              .exists?(['last_sent_at >= ?', cutoff_time])
+      end
 
       def allowed_severity?(monitoring_error, settings)
         min_required_severity = (settings['notify_severity_min'] || 'error').to_s

@@ -55,5 +55,27 @@ module MonitoringErrors
     def monitoring_dev_mode?
       RedmineMonitoring::Env.dev_mode?
     end
+
+    def confidence_label(value)
+      WARNING_CONFIDENCE[value.to_i]
+    end
+
+    def confidence_class(value)
+      case value.to_i
+      when 0 then 'high'
+      when 1 then 'medium'
+      else 'weak'
+      end
+    end
+
+    def template_label(location, render_path)
+      full_template = []
+      full_template << location['template']
+      if render_path[0]&.key?('class') && render_path[0]&.key?('method')
+        endpoint = "(#{render_path[0]['class']}##{render_path[0]['method']})"
+      end
+      full_template << endpoint
+      full_template.compact.join(' ')
+    end
   end
 end

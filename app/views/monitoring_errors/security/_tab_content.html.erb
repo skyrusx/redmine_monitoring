@@ -1,0 +1,88 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" %>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js" %>
+  <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/chartkick@4.2.0/dist/chartkick.min.js" %>
+<% end %>
+
+<div id="mm-tab-metrics" class="mm-tabpanel" style="display:block">
+  <p class="mm-subtitle"><i><%= label_hint("security") %></i></p>
+
+  <table class="mm-table">
+    <thead>
+      <tr>
+        <th class="mm-col-collapse"></th>
+        <th class="mm-col-minimum"><%= l(:label_security_started_at) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_duration) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_warnings_count) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_errors_count) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_obsolete_count) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_ignored_warnings_count) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_scanner_version) %></th>
+        <th class="mm-col-minimum"><%= l(:label_security_rails_version) %> / <%= l(:label_security_ruby_version) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @security_scans.records.each_with_index do |scan, index| %>
+        <tr class="mm-row error-row" data-target="details-<%= index %>">
+          <td class="mm-col-collapse"><span class="expand-icon">▸</span></td>
+          <td class="mm-col-minimum"><%= scan.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td class="mm-col-minimum"><%= scan.duration.round(2) %></td>
+          <td class="mm-col-minimum"><%= scan.warnings_count %></td>
+          <td class="mm-col-minimum"><%= scan.errors_count %></td>
+          <td class="mm-col-minimum"><%= scan.obsolete_count %></td>
+          <td class="mm-col-minimum"><%= scan.ignored_warnings_count %></td>
+          <td class="mm-col-minimum"><%= scan.scanner_version %></td>
+          <td class="mm-col-minimum"><%= scan.rails_version %> / <%= scan.ruby_version %></td>
+        </tr>
+
+        <tr id="details-<%= index %>" class="details-row" style="display:none;">
+          <td colspan="9">
+            <div class="mm-details">
+              <div class="mm-kv"><span><%= l(:label_security_app_path) %></span><code><%= scan.app_path %></code></div>
+              <div class="mm-kv"><span><%= l(:label_security_rails_version_full) %></span><code><%= scan.rails_version %></code></div>
+              <div class="mm-kv"><span><%= l(:label_security_ruby_version_full) %></span><code><%= scan.ruby_version %></code></div>
+              <div class="mm-kv"><span><%= l(:label_security_brakeman_version) %></span><code><%= scan.scanner_version %></code></div>
+              <div class="mm-kv"><span><%= l(:label_security_duration_report) %></span><code><%= scan.started_at.strftime("%Y-%m-%d %H:%M:%S") %> / <%= scan.duration.round(2) %> сек</code></div>
+              <div class="mm-kv"><span><%= l(:label_security_checks_performed) %></span><code><%= scan.checks_performed.join(', ') %></code></div>
+              <% if scan.raw_html.present? %>
+                <div class="mm-kv">
+                  <span><%= l(:label_security_raw_html) %></span>
+                  <%= link_to l(:label_security_open_raw_html), monitoring_security_report_path(scan.id), target: '_blank', class: 'mm-link' %>
+                </div>
+              <% end %>
+
+              <div class="mm-kv"><h3><%= l(:label_security_summary) %></h3></div>
+              <div class="mm-kv_chart">
+                <h3><%= l(:label_security_scanned) %></h3>
+                <%= pie_chart summary_scan_info(scan), legend: :bottom %></div>
+              <div class="mm-kv"></div>
+              <div class="mm-kv_chart">
+                <h3><%= l(:label_security_warning_type) %></h3>
+                <%= bar_chart summary_warning_type(scan) %>
+              </div>
+
+              <% if scan.monitoring_security_warnings.present? %>
+                <% grouping_warnings(scan.monitoring_security_warnings).each_with_index do |(type, warnings), ind| %>
+                  <%= render "monitoring_errors/security/#{type}_warnings", warnings: warnings, index: index %>
+                <% end %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mm-pagination">
+    <div class="mm-pagination-links">
+      <%= pagination_links_full @security_scans.paginator, @security_scans.count %>
+    </div>
+
+    <div class="mm-pagination-perpage">
+      <span><%= l(:label_per_page) %></span>
+      <% Setting.per_page_options_array.each do |per_page| %>
+        <%= link_to per_page, monitoring_path_with(per_page: per_page), class: "mm-page-size #{'is-active' if per_page == @security_scans.paginator.per_page}" %>
+      <% end %>
+    </div>
+  </div>
+</div>

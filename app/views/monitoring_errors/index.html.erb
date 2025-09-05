@@ -12,6 +12,7 @@
   <%= link_to l(:label_tab_groups), monitoring_tab_path('groups'), class: "mm-tab #{'is-active' if current_tab == 'groups'}" %>
   <% if monitoring_dev_mode? %>
     <%= link_to l(:label_tab_recommendations), monitoring_tab_path('recommendations'), class: "mm-tab #{'is-active' if current_tab == 'recommendations'}" %>
+    <%= link_to l(:label_tab_security), monitoring_tab_path('security'), class: "mm-tab #{'is-active' if current_tab == 'security'}" %>
   <% end %>
   <%= link_to l(:label_tab_alerts), monitoring_tab_path('alerts'), class: "mm-tab #{'is-active' if current_tab == 'alerts'}" %>
 

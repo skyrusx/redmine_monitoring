@@ -1,4 +1,7 @@
+require 'securerandom'
+
 class MonitoringErrorsController < ApplicationController
+  include MonitoringErrors::Rendering
   include RedmineMonitoring::Constants
   include MonitoringErrorsHelper
   attr_reader :current_tab
@@ -20,6 +23,7 @@ class MonitoringErrorsController < ApplicationController
     when 'groups' then render_groups
     when 'recommendations' then render_recommendations
     when 'alerts' then render_alerts
+    when 'security' then render_security
     else render_list_with_exports
     end
   end
@@ -48,10 +52,8 @@ class MonitoringErrorsController < ApplicationController
 
     # намеренно делаем N+1: для каждой задачи читаем автора
     issues = Issue.limit(10).to_a
-    issues.each do |issue|
-      # доступ к ассоциации author спровоцирует N+1, если в запросе не использовать .includes(:author)
-      issue.author.name
-    end
+    # доступ к ассоциации author спровоцирует N+1, если в запросе не использовать .includes(:author)
+    issues.each { |issue| issue.author.name }
 
     redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t('notices.test_n_plus_one')
   end
@@ -65,47 +67,49 @@ class MonitoringErrorsController < ApplicationController
     return redirect_to monitoring_errors_path unless MonitoringError.allow_severity?(severity)
     return redirect_to monitoring_errors_path unless MonitoringError.allow_format?(format)
 
-    error = MonitoringErrors::Tester.call(request, severity)
-    RedmineMonitoring::Notifications::Dispatcher.new.call(error.id)
+    MonitoringErrors::Tester.call(request, severity)
 
     redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t('notices.test_alert')
   end
 
-  private
+  def security_scan
+    return render_404 unless monitoring_dev_mode?
 
-  def render_dashboard
-    @dashboard = MonitoringErrors::Dashboard.new
+    # режим: :auto / :api / :cli
+    scan_mode = (Setting.plugin_redmine_monitoring['security_scan_mode'] || 'auto').to_s.downcase.to_sym
+
+    # опции для API Brakeman (пример: { min_confidence: 1, ignore_file: 'config/brakeman.ignore' })
+    api_options = {}
+
+    # флаги для CLI Brakeman (пример: ['-w', '1', '-i', 'config/brakeman.ignore'])
+    cli_flags = []
+
+    RedmineMonitoring::Security::BrakemanIngest.call!(
+      prefer: scan_mode,
+      options: api_options,
+      extra_args: cli_flags,
+      output_html: true
+    )
+
+    redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t('notices.security_scan')
   end
 
-  def render_metrics
-    @metrics = MonitoringErrors::Metrics.new(per_page_param, params[:page])
-  end
+  def security_report
+    scan = MonitoringSecurityScan.find_by(id: params[:id])
+    return render_404 unless scan
+    return render_403 unless User.current.admin?
 
-  def render_groups
-    @groups = MonitoringErrors::Grouper.new(@base_scope, per_page_param, params[:page])
-  end
-
-  def render_recommendations
-    render_404 unless monitoring_dev_mode?
-    @recommendations = MonitoringErrors::Recommendations.new(per_page_param, params[:page])
-  end
-
-  def render_alerts
-    @alerts = MonitoringErrors::Alerts.new(per_page_param, params[:page])
-  end
-
-  def render_list_with_exports
-    @lister = MonitoringErrors::Lister.new(@base_scope, per_page_param, params[:page])
-
-    respond_to do |format|
-      format.html
-      AVAILABLE_EXPORT_FORMATS.each do |export_format|
-        format.public_send(export_format) do
-          MonitoringErrors::Exporter.new(@base_scope).send(export_format, self)
-        end
-      end
+    if scan.raw_html.present?
+      send_data scan.raw_html,
+                type: 'text/html',
+                disposition: 'inline',
+                filename: "security-report-#{scan.id}.html"
+    else
+      render_404
     end
   end
+
+  private
 
   def check_monitoring_enabled
     return if Setting.plugin_redmine_monitoring['enabled']
@@ -121,7 +125,7 @@ class MonitoringErrorsController < ApplicationController
   end
 
   def send_export(format, mime_type)
-    send_data MonitoringErrors::Export.new(@base_scope).public_send("to_#{format}"),
+    send_data MonitoringErrors::Export.new(MonitoringError.filter(params)).public_send("to_#{format}"),
               filename: "monitoring-errors__#{Time.zone.today}.#{format}",
               type: mime_type
   end

@@ -125,5 +125,22 @@
         <%= number_field_tag 'settings[notify_throttle_per_group_per_min]', @settings[:notify_throttle_per_group_per_min], min: 1, step: 1 %>
       </p>
     </fieldset>
+
+    <fieldset>
+      <legend><b><%= l(:label_tab_security) %></b></legend>
+
+      <p>
+        <%= label_tag 'settings_security_enabled', l("settings.fields.label_security_enabled") %>
+        <%= check_box_tag 'settings[security_enabled]', true, @settings[:security_enabled] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_security_allow_manual_scan', l("settings.fields.label_security_allow_manual_scan") %>
+        <%= check_box_tag 'settings[security_allow_manual_scan]', true, @settings[:security_allow_manual_scan] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_security_keep_html', l("settings.fields.label_security_keep_html") %>
+        <%= check_box_tag 'settings[security_keep_html]', true, @settings[:security_keep_html] %>
+      </p>
+    </fieldset>
   </fieldset>
 </div>

@@ -80,6 +80,8 @@
 .mm-table__nested {
   border: 1px solid #ccc;
   border-collapse: separate !important;
+  table-layout: auto;
+  background: #fff;
 }
 
 .mm-table thead th {
@@ -115,6 +117,11 @@
   text-align: center;
 }
 
+.mm-col-minimum {
+  width: 100px;
+  text-align: center !important;
+}
+
 .mm-col-short {
   width: 150px;
   text-align: center;
@@ -146,6 +153,21 @@
   min-width: 120px;
   font-weight: 600;
   color: #374151;
+}
+
+.mm-kv > h3 {
+  margin-top: 10px;
+}
+
+.mm-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mm-scroll-x > table {
+  white-space: nowrap;
 }
 
 .mm-mono {
@@ -184,15 +206,22 @@
 .mm-badge__warning,
 .mm-badge__4xx,
 .mm-badge__status-processing,
-.mm-badge__severity-warning {
+.mm-badge__severity-warning,
+.mm-badge__weak {
   background-color: #ffc107;
+  color: #fff;
+}
+
+.mm-badge__medium {
+  background-color: #ff9900;
   color: #fff;
 }
 
 .mm-badge__error,
 .mm-badge__5xx,
 .mm-badge__status-failed,
-.mm-badge__severity-error {
+.mm-badge__severity-error,
+.mm-badge__high {
   background-color: #dc3545;
   color: #fff;
 }
@@ -604,4 +633,91 @@
   font-style: italic;
   color: #555;
   margin-bottom: 8px;
+}
+
+a > .mm-badge {
+  text-decoration: underline;
+}
+
+a:hover > .mm-badge {
+  text-decoration: unset;
+}
+
+.mm-preloader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(255, 255, 255, .85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.mm-preloader-box {
+  text-align: center;
+  font: 14px/1.4 sans-serif;
+  color: #333;
+}
+
+.mm-preloader-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(0, 0, 0, .15);
+  border-top-color: #3c9;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  animation: mmspin .8s linear infinite;
+}
+
+@keyframes mmspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mm-code {
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.mm-code__table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.mm-code__gutter {
+  position: sticky;
+  left: 0;
+  background: #f6f8fa;
+  color: #6b7280;
+  padding: 0 10px;
+  text-align: right;
+  white-space: nowrap;
+  user-select: none;
+  border-right: 1px solid #e5e7eb;
+  width: 50px;
+}
+
+.mm-code__cell {
+  padding: 0 12px;
+  white-space: pre;
+}
+
+.mm-code__row.is-hit .mm-code__cell {
+  background: #fff3cd;
+  box-shadow: inset 3px 0 0 #f0b429;
+}
+
+.mm-code__row:hover .mm-code__cell {
+  background: #f8fafc;
+}
+
+.mm-kv_chart {
+  text-align: center;
 }

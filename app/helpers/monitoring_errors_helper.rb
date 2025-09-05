@@ -7,4 +7,5 @@ module MonitoringErrorsHelper
   include MonitoringErrors::StatusHelper
   include MonitoringErrors::JsonHelper
   include MonitoringErrors::HtmlHelper
+  include MonitoringErrors::SecurityHelper
 end
