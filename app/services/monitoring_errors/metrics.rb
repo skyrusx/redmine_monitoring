@@ -31,7 +31,7 @@ module MonitoringErrors
         controller_names: controller_names,
         action_names: action_names,
         formats: formats,
-        envs: envs,
+        envs: envs
       }
     end
 
