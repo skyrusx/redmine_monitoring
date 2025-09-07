@@ -6,6 +6,7 @@ require_relative 'constants/formats'
 require_relative 'constants/statuses'
 require_relative 'constants/other'
 require_relative 'constants/caches'
+require_relative 'constants/metrics'
 
 module RedmineMonitoring
   module Constants
