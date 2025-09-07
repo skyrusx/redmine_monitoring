@@ -3,6 +3,12 @@ ru:
   settings:
     label_title: "Настройки Redmine Monitoring"
 
+    subtitles:
+      metrics: "Метрики"
+      errors: "Ошибки"
+      alerts: "Уведомления"
+      security: "Безопасность"
+
     fields:
       label_enabled: "Включить мониторинг"
       label_dev_mode: "Режим разработки"
@@ -17,6 +23,10 @@ ru:
       label_enable_metrics: "Включить сбор метрик запросов"
       label_slow_request_threshold_ms: "Порог медленного запроса (мс)"
       label_slow_request_threshold_ms_hint: "Метрики запросов собираются только при превышении заданного порога."
+      label_metrics_max_records: "Максимум записей"
+      label_metrics_max_records_hint: "Ограничение размера таблицы, старые записи будут удаляться."
+      label_metrics_retention_days: "Срок хранения (дней)"
+      label_metrics_retention_days_hint: "Удаление метрик старше указанного количества дней."
       label_notify_enabled: "Включить уведомления"
       label_notify_channels: "Каналы"
       label_notify_severity_min: "Минимальный порог уровня"

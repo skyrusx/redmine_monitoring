@@ -3,6 +3,12 @@ en:
   settings:
     label_title: "Redmine Monitoring Settings"
 
+    subtitles:
+      metrics: "Metrics"
+      errors: "Errors"
+      alerts: "Notifications"
+      security: "Security"
+
     fields:
       label_enabled: "Enable monitoring"
       label_dev_mode: "Development mode"
@@ -17,6 +23,10 @@ en:
       label_enable_metrics: "Enable request metrics collection"
       label_slow_request_threshold_ms: "Slow request threshold (ms)"
       label_slow_request_threshold_ms_hint: "Request metrics are collected only when the threshold is exceeded."
+      label_metrics_max_records: "Maximum records"
+      label_metrics_max_records_hint: "Limit the table size; older records will be removed."
+      label_metrics_retention_days: "Retention (days)"
+      label_metrics_retention_days_hint: "Delete metrics older than the specified number of days."
       label_notify_enabled: "Enable notifications"
       label_notify_channels: "Channels"
       label_notify_severity_min: "Minimum severity level"
