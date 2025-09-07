@@ -15,7 +15,10 @@ class MonitoringErrorsController < ApplicationController
   helper_method :current_tab
 
   def index
-    @base_scope = MonitoringError.filter(params)
+    @base_scope = {
+      metrics: MonitoringRequest.filter(params),
+      errors: MonitoringError.filter(params)
+    }
 
     case current_tab
     when 'dashboard' then render_dashboard

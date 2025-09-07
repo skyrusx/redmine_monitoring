@@ -36,8 +36,7 @@ module MonitoringErrors
 
       group_columns = %w[exception_class message] << first_frame_sql
 
-      base_scope.select(select_fields.join(', '))
-                .group(group_columns.join(', '))
+      base_scope.select(select_fields.join(', ')).group(group_columns.join(', '))
     end
   end
 end

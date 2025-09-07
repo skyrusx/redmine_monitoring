@@ -7,20 +7,12 @@ module MonitoringErrors
     def monitoring_export_links
       content_tag(:div, class: 'mm-export') do
         links = EXPORT_FORMATS.map do |format, label|
-          extra_params = if format == :json && Setting.rest_api_enabled?
-                           { format: format, key: User.current.api_key }
-                         else
-                           { format: format }
-                         end
-
+          extra_params = { format: format }
+          extra_params[:key] = User.current.api_key if format == :json && Setting.rest_api_enabled?
           link_to l(label), monitoring_path_with(extra_params), class: 'mm-btn'
         end
 
-        safe_join(
-          [content_tag(:span, l(:label_export_to), class: 'mm-export-label'),
-           safe_join(links, ' | ')],
-          ' '
-        )
+        safe_join([content_tag(:span, l(:label_export_to), class: 'mm-export-label'), *links], ' ')
       end
     end
 

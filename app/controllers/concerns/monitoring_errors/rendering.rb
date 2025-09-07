@@ -12,12 +12,20 @@ module MonitoringErrors
     end
 
     def render_metrics
-      base_scope = MonitoringRequest.filter(params)
-      @metrics = MonitoringErrors::Metrics.new(base_scope, per_page_param, params[:page])
+      @metrics = MonitoringErrors::Metrics.new(@base_scope[:metrics], per_page_param, params[:page])
+
+      respond_to do |format|
+        format.html
+        AVAILABLE_EXPORT_FORMATS.each do |export_format|
+          format.public_send(export_format) do
+            MonitoringErrors::Exporter.new(@base_scope[:metrics]).send(export_format, self)
+          end
+        end
+      end
     end
 
     def render_groups
-      @groups = MonitoringErrors::Grouper.new(@base_scope, per_page_param, params[:page])
+      @groups = MonitoringErrors::Grouper.new(@base_scope[:errors], per_page_param, params[:page])
     end
 
     def render_recommendations
@@ -34,13 +42,13 @@ module MonitoringErrors
     end
 
     def render_list_with_exports
-      @lister = MonitoringErrors::Lister.new(@base_scope, per_page_param, params[:page])
+      @lister = MonitoringErrors::Lister.new(@base_scope[:errors], per_page_param, params[:page])
 
       respond_to do |format|
         format.html
         AVAILABLE_EXPORT_FORMATS.each do |export_format|
           format.public_send(export_format) do
-            MonitoringErrors::Exporter.new(@base_scope).send(export_format, self)
+            MonitoringErrors::Exporter.new(@base_scope[:errors]).send(export_format, self)
           end
         end
       end

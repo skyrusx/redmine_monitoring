@@ -11,7 +11,7 @@ module MonitoringRequestScopes
     scope :by_user, ->(value) { where(user: value) if value.present? }
     scope :by_controller_name, ->(value) { where(controller_name: value) if value.present? }
     scope :by_action_name, ->(value) { where(action_name: value) if value.present? }
-    scope :by_format, ->(value) { where(format: value) if value.present? }
+    scope :by_request_format, ->(value) { where(format: value) if value.present? }
     scope :by_env, ->(value) { where(env: value) if value.present? }
     scope :by_path, lambda { |value|
       if value.present?
@@ -34,7 +34,7 @@ module MonitoringRequestScopes
          .by_user(params[:user])
          .by_controller_name(params[:controller_name])
          .by_action_name(params[:action_name])
-         .by_format(params[:format])
+         .by_request_format(params[:request_format])
          .by_env(params[:env])
          .by_path(params[:path])
          .created_from(params[:created_at_from])

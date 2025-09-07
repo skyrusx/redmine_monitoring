@@ -32,7 +32,7 @@
   </div>
 
   <div class="mm-field">
-    <%= f.select :format, options_for_select(@metrics.filters[:formats], params[:format]), { include_blank: l(:label_select_format) }, { class: "monitoring-select2" } %>
+    <%= f.select :request_format, options_for_select(@metrics.filters[:formats], params[:request_format]), { include_blank: l(:label_select_format) }, { class: "monitoring-select2" } %>
   </div>
 
   <div class="mm-field">
