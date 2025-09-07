@@ -1,4 +1,10 @@
 <div id="mm-tab-metrics" class="mm-tabpanel" style="display:block">
+  <div class="filters">
+    <%= form_with url: monitoring_errors_path, method: :get, local: true do |f| %>
+      <%= render partial: 'monitoring_errors/metrics/filters', locals: { f: f } %>
+    <% end %>
+  </div>
+
   <p class="mm-subtitle"><i><%= label_hint("metrics") %></i></p>
 
   <table class="mm-table">

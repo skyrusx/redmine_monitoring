@@ -1,0 +1,62 @@
+<%= hidden_field_tag :tab, current_tab %>
+
+<div class="mm-row">
+  <div class="mm-field">
+    <%= f.select :normalized_path, options_for_select(@metrics.filters[:normalized_paths], params[:normalized_path]), { include_blank: l(:label_select_normalized_paths) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :ip_address, options_for_select(@metrics.filters[:ip_addresses], params[:ip_address]), { include_blank: l(:label_select_ip_address) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :method, options_for_select(@metrics.filters[:methods], params[:method]), { include_blank: l(:label_select_method) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :status_code, options_for_select(@metrics.filters[:status_codes], params[:status_code]), { include_blank: l(:label_select_status_code) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :user_id, options_from_collection_for_select(@metrics.filters[:users], :id, :name, params[:user_id]), { include_blank: l(:label_select_user) }, { class: "monitoring-select2" } %>
+  </div>
+</div>
+
+<div class="mm-row">
+  <div class="mm-field">
+    <%= f.select :controller_name, options_for_select(@metrics.filters[:controller_names], params[:controller_name]), { include_blank: l(:label_select_controller_name) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :action_name, options_for_select(@metrics.filters[:action_names], params[:action_name]), { include_blank: l(:label_select_action_name) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :format, options_for_select(@metrics.filters[:formats], params[:format]), { include_blank: l(:label_select_format) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :env, options_for_select(@metrics.filters[:envs], params[:env]), { include_blank: l(:label_select_env) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.date_field :created_at_from, value: params[:created_at_from] %>
+    <%= f.label :created_at_from, "-" %>
+    <%= f.date_field :created_at_to, value: params[:created_at_to] %>
+  </div>
+</div>
+
+<div class="mm-row">
+  <div class="mm-field">
+    <%= f.text_area :path, value: params[:path], rows: 5, class: 'monitoring-textarea', placeholder: l(:label_textarea_path) %>
+  </div>
+</div>
+
+<div class="mm-row">
+  <div class="mm-field"></div>
+
+  <div>
+    <%= f.submit l(:button_apply), class: 'mm-btn mm-btn--primary' %>
+    <%= link_to l(:label_clear), monitoring_errors_path(tab: current_tab), class: 'mm-btn mm-btn--secondary' %>
+  </div>
+</div>

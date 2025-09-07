@@ -12,7 +12,8 @@ module MonitoringErrors
     end
 
     def render_metrics
-      @metrics = MonitoringErrors::Metrics.new(per_page_param, params[:page])
+      base_scope = MonitoringRequest.filter(params)
+      @metrics = MonitoringErrors::Metrics.new(base_scope, per_page_param, params[:page])
     end
 
     def render_groups
