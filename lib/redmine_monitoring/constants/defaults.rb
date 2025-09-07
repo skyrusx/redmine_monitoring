@@ -11,6 +11,8 @@ module RedmineMonitoring
       enabled_formats: %w[HTML JSON],
       enable_metrics: true,
       slow_request_threshold_ms: 0,
+      metrics_max_records: 100_000,
+      metrics_retention_days: 30,
       notify_enabled: true,
       notify_channels: %w[email telegram],
       notify_severity_min: 'error',

@@ -5,7 +5,7 @@
 
 <div class="settings-redmine-monitoring">
   <fieldset>
-    <legend><b><%= l("settings.label_title") %></b></legend>
+    <legend><b><%= l('settings.label_title') %></b></legend>
 
     <p>
       <%= label_tag 'settings_enabled', l("settings.fields.label_enabled") %>
@@ -17,7 +17,7 @@
     </p>
 
     <fieldset>
-      <legend><b><%= l(:label_tab_metrics) %></b></legend>
+      <legend><b><%= l('settings.subtitles.metrics') %></b></legend>
 
       <p>
         <%= label_tag 'settings_enable_metrics', l("settings.fields.label_enable_metrics") %>
@@ -28,10 +28,20 @@
         <%= number_field_tag 'settings[slow_request_threshold_ms]', @settings[:slow_request_threshold_ms], min: 0, step: 50 %>
         <em class="info"><%= l("settings.fields.label_slow_request_threshold_ms_hint") %></em>
       </p>
+      <p>
+        <%= label_tag 'settings_metrics_max_records', l("settings.fields.label_metrics_max_records") %>
+        <%= number_field_tag 'settings[metrics_max_records]', @settings[:metrics_max_records] || 100_000, min: 1000, max: 1_000_000, step: 1 %>
+        <em class="info"><%= l("settings.fields.label_metrics_max_records_hint") %></em>
+      </p>
+      <p>
+        <%= label_tag 'settings_metrics_retention_days', l("settings.fields.label_metrics_retention_days") %>
+        <%= number_field_tag 'settings[metrics_retention_days]', @settings[:metrics_retention_days] || 30, min: 1, step: 1 %>
+        <em class="info"><%= l("settings.fields.label_metrics_retention_days_hint") %></em>
+      </p>
     </fieldset>
 
     <fieldset>
-      <legend><b><%= l(:label_tab_errors) %></b></legend>
+      <legend><b><%= l('settings.subtitles.errors') %></b></legend>
 
       <p>
         <%= label_tag 'settings_max_errors', l("settings.fields.label_max_errors") %>
@@ -62,7 +72,7 @@
     </fieldset>
 
     <fieldset>
-      <legend><b><%= l(:label_tab_alerts) %></b></legend>
+      <legend><b><%= l('settings.subtitles.alerts') %></b></legend>
 
       <p>
         <%= label_tag 'settings_notify_enabled', l("settings.fields.label_notify_enabled") %>
@@ -127,7 +137,7 @@
     </fieldset>
 
     <fieldset>
-      <legend><b><%= l(:label_tab_security) %></b></legend>
+      <legend><b><%= l('settings.subtitles.security') %></b></legend>
 
       <p>
         <%= label_tag 'settings_security_enabled', l("settings.fields.label_security_enabled") %>
