@@ -50,13 +50,13 @@
                 <div class="mm-code">
                   <div class="mm-code__header">
                     <span><%= l(:label_code) %></span>
-                    <button class="mm-copy-btn" data-target="headers-<%= index %>">
+                    <button class="mm-copy-btn" data-target="user-agent-<%= index %>">
                       <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
                       <%= l(:label_copy) %>
                     </button>
                   </div>
                   <div class="mm-code__body">
-                    <pre id="params-<%= index %>"><code><%= metric.user_agent %></code></pre>
+                    <pre id="user-agent-<%= index %>"><code><%= metric.user_agent %></code></pre>
                   </div>
                 </div>
               </div>
@@ -66,13 +66,13 @@
                 <div class="mm-code">
                   <div class="mm-code__header">
                     <span><%= l(:label_code) %></span>
-                    <button class="mm-copy-btn" data-target="headers-<%= index %>">
+                    <button class="mm-copy-btn" data-target="referer-<%= index %>">
                       <svg viewBox="0 0 24 24"><path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H10V7h9v14z"/></svg>
                       <%= l(:label_copy) %>
                     </button>
                   </div>
                   <div class="mm-code__body">
-                    <pre id="params-<%= index %>"><code><%= metric.referer %></code></pre>
+                    <pre id="referer-<%= index %>"><code><%= metric.referer %></code></pre>
                   </div>
                 </div>
               </div>
