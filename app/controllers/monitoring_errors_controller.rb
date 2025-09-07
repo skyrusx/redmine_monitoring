@@ -97,16 +97,9 @@ class MonitoringErrorsController < ApplicationController
   def security_report
     scan = MonitoringSecurityScan.find_by(id: params[:id])
     return render_404 unless scan
-    return render_403 unless User.current.admin?
+    return render_404 unless scan.raw_html.present?
 
-    if scan.raw_html.present?
-      send_data scan.raw_html,
-                type: 'text/html',
-                disposition: 'inline',
-                filename: "security-report-#{scan.id}.html"
-    else
-      render_404
-    end
+    send_data scan.raw_html, type: 'text/html', disposition: 'inline', filename: "security-report-#{scan.id}.html"
   end
 
   private
