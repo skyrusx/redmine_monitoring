@@ -6,6 +6,7 @@ en:
     subtitles:
       metrics: "Metrics"
       errors: "Errors"
+      recommendations: "Recommendations"
       alerts: "Notifications"
       security: "Security"
 
@@ -40,6 +41,8 @@ en:
       label_security_enabled: "Enable Brakeman integration"
       label_security_allow_manual_scan: "Allow manual scan"
       label_security_keep_html: "Keep HTML report"
+      label_enable_recommendations: "Enable recommendations"
+      label_enable_bullet_recommendations: "Enable Bullet integration"
 
   notices:
     test_error: "Test error created successfully"
@@ -207,6 +210,9 @@ en:
   label_select_method: "-- Select method --"
   label_select_ip_address: "-- Select IP address --"
   label_select_normalized_paths: "-- Select URL template --"
+  label_select_category: "-- Select category --"
+  label_select_kind: "-- Select kind --"
+  label_select_source: "-- Select source --"
 
   label_textarea_message: "Search messages..."
   label_textarea_path: "Search by URL..."
@@ -253,6 +259,10 @@ en:
   label_pdf_file: "File"
   label_pdf_line: "Line"
   label_pdf_fingerprint: "Fingerprint"
+  label_pdf_source: "Source"
+  label_pdf_category: "Category"
+  label_pdf_kind: "Kind"
+  label_pdf_details: "Details"
 
   label_tab_dashboard: "Dashboard"
   label_tab_metrics: "Metrics"

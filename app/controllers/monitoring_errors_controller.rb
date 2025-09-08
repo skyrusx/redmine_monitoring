@@ -17,7 +17,8 @@ class MonitoringErrorsController < ApplicationController
   def index
     @base_scope = {
       metrics: MonitoringRequest.filter(params),
-      errors: MonitoringError.filter(params)
+      errors: MonitoringError.filter(params),
+      recommendations: MonitoringRecommendation.filter(params)
     }
 
     case current_tab

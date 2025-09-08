@@ -1,0 +1,54 @@
+<%= hidden_field_tag :tab, current_tab %>
+
+<div class="mm-row">
+  <div class="mm-field">
+    <%= f.select :controller_name, options_for_select(@recommendations.filters[:controller_names], params[:controller_name]), { include_blank: l(:label_select_controller_name) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :action_name, options_for_select(@recommendations.filters[:action_names], params[:action_name]), { include_blank: l(:label_select_action_name) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :category, options_for_select(@recommendations.filters[:categories], params[:category]), { include_blank: l(:label_select_category) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :kind, options_for_select(@recommendations.filters[:kinds], params[:kind]), { include_blank: l(:label_select_kind) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field">
+    <%= f.select :user_id, options_from_collection_for_select(@recommendations.filters[:users], :id, :name, params[:user_id]), { include_blank: l(:label_select_user) }, { class: "monitoring-select2" } %>
+  </div>
+</div>
+
+<div class="mm-row">
+  <div class="mm-field">
+    <%= f.select :source, options_for_select(@recommendations.filters[:sources], params[:source]), { include_blank: l(:label_select_source) }, { class: "monitoring-select2" } %>
+  </div>
+
+  <div class="mm-field"></div>
+  <div class="mm-field"></div>
+  <div class="mm-field"></div>
+
+  <div class="mm-field">
+    <%= f.date_field :created_at_from, value: params[:created_at_from] %>
+    <%= f.label :created_at_from, "-" %>
+    <%= f.date_field :created_at_to, value: params[:created_at_to] %>
+  </div>
+</div>
+
+<div class="mm-row">
+  <div class="mm-field">
+    <%= f.text_area :message, value: params[:message], rows: 5, class: 'monitoring-textarea', placeholder: l(:label_textarea_message) %>
+  </div>
+</div>
+
+<div class="mm-row">
+  <div class="mm-field"></div>
+
+  <div>
+    <%= f.submit l(:button_apply), class: 'mm-btn mm-btn--primary' %>
+    <%= link_to l(:label_clear), monitoring_errors_path(tab: current_tab), class: 'mm-btn mm-btn--secondary' %>
+  </div>
+</div>

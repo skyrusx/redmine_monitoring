@@ -6,6 +6,7 @@ ru:
     subtitles:
       metrics: "Метрики"
       errors: "Ошибки"
+      recommendations: "Рекомендации"
       alerts: "Уведомления"
       security: "Безопасность"
 
@@ -40,6 +41,8 @@ ru:
       label_security_enabled: "Включить интеграцию с Brakeman"
       label_security_allow_manual_scan: "Разрешить ручной запуск сканирования"
       label_security_keep_html: "Сохранять HTML-отчёт"
+      label_enable_recommendations: "Включить рекомендации"
+      label_enable_bullet_recommendations: "Включить интеграцию с Bullet"
 
   notices:
     test_error: "Тестовая ошибка успешно создана"
@@ -207,6 +210,9 @@ ru:
   label_select_method: "-- Выберите метод --"
   label_select_ip_address: "-- Выберите IP-адрес --"
   label_select_normalized_paths: "-- Выберите шаблон URL --"
+  label_select_category: "-- Выберите категорию --"
+  label_select_kind: "-- Выберите тип --"
+  label_select_source: "-- Выберите источник --"
 
   label_textarea_message: "Поиск по сообщениям..."
   label_textarea_path: "Поиск по url..."
@@ -253,6 +259,10 @@ ru:
   label_pdf_file: "Файл"
   label_pdf_line: "Строка"
   label_pdf_fingerprint: "Fingerprint"
+  label_pdf_source: "Источник"
+  label_pdf_category: "Категория"
+  label_pdf_kind: "Тип"
+  label_pdf_details: "Подробности"
 
   label_tab_dashboard: "Dashboard"
   label_tab_metrics: "Метрики"

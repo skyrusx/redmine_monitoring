@@ -1,4 +1,10 @@
 <div id="mm-tab-metrics" class="mm-tabpanel" style="display:block">
+  <div class="filters">
+    <%= form_with url: monitoring_errors_path, method: :get, local: true do |f| %>
+      <%= render partial: 'monitoring_errors/recommendations/filters', locals: { f: f } %>
+    <% end %>
+  </div>
+
   <p class="mm-subtitle"><i><%= label_hint("reco") %></i></p>
 
   <table class="mm-table">
@@ -26,9 +32,12 @@
         <tr id="details-<%= index %>" class="details-row" style="display:none;">
           <td colspan="6">
             <div class="mm-details">
-              <div class="mm-kv"><span><%= l(:label_source) %></span><code><%= reco.source %></code></div>
+              <div class="mm-kv"><span><%= l(:label_source) %></span><code><%= reco.source.capitalize %></code></div>
+              <div class="mm-kv"><span><%= l(:label_category) %></span><code><%= reco_category(reco.category) %></code></div>
+              <div class="mm-kv"><span><%= l(:label_kind) %></span><code><%= reco_kind(reco.kind) %></code></div>
+              <div class="mm-kv"><span><%= l(:label_endpoint) %></span><code><%= reco.controller_name %>#<%= reco.action_name %></code></div>
               <div class="mm-kv"><span><%= l(:label_full_path) %></span><code><%= reco.path %></code></div>
-              <div class="mm-kv"><span><%= l(:label_user) %></span><code><%= user_info(reco.user) %></code></div>
+              <div class="mm-kv"><span><%= l(:label_user) %></span><code><%= reco.user %></code></div>
 
               <div class="mm-block">
                 <div class="mm-block__title"><%= l(:label_message) %></div>
@@ -64,4 +73,6 @@
       <% end %>
     </div>
   </div>
+
+  <%= monitoring_export_links %>
 </div>
