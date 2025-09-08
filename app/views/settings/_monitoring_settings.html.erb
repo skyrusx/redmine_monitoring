@@ -72,6 +72,19 @@
     </fieldset>
 
     <fieldset>
+      <legend><b><%= l('settings.subtitles.recommendations') %></b></legend>
+
+      <p>
+        <%= label_tag 'settings_enable_recommendations', l("settings.fields.label_enable_recommendations") %>
+        <%= check_box_tag 'settings[enable_recommendations]', true, @settings[:enable_recommendations] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_enable_bullet_recommendations', l("settings.fields.label_enable_bullet_recommendations") %>
+        <%= check_box_tag 'settings[enable_bullet_recommendations]', true, @settings[:enable_bullet_recommendations] %>
+      </p>
+    </fieldset>
+
+    <fieldset>
       <legend><b><%= l('settings.subtitles.alerts') %></b></legend>
 
       <p>

@@ -25,7 +25,9 @@ module RedmineMonitoring
       notify_throttle_per_group_per_min: 5,
       security_enabled: true,
       security_allow_manual_scan: true,
-      security_keep_html: true
+      security_keep_html: true,
+      enable_recommendations: true,
+      enable_bullet_recommendations: true
     }.freeze
 
     DEFAULT_BATCH_SIZE = 1_000
