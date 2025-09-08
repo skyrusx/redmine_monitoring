@@ -58,7 +58,7 @@ module MonitoringErrors
     end
 
     def sources
-      MonitoringRecommendation.distinct.pluck(:source).compact.sort.map(&:titleize)
+      MonitoringRecommendation.distinct.pluck(:source).compact.sort
     end
   end
 end
