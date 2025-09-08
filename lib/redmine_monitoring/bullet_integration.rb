@@ -17,7 +17,7 @@ module RedmineMonitoring
       def enable?
         settings = Setting.plugin_redmine_monitoring || {}
         ActiveModel::Type::Boolean.new.cast(settings['dev_mode']) &&
-          ActiveModel::Type::Boolean.new.cast(settings['enable_recommendations'])  &&
+          ActiveModel::Type::Boolean.new.cast(settings['enable_recommendations']) &&
           ActiveModel::Type::Boolean.new.cast(settings['enable_bullet_recommendations'])
       rescue StandardError
         false

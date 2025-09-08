@@ -30,7 +30,9 @@ module MonitoringErrors
 
     def render_recommendations
       render_404 unless monitoring_dev_mode?
-      @recommendations = MonitoringErrors::Recommendations.new(@base_scope[:recommendations], per_page_param, params[:page])
+      @recommendations = MonitoringErrors::Recommendations.new(
+        @base_scope[:recommendations], per_page_param, params[:page]
+      )
 
       respond_to do |format|
         format.html
