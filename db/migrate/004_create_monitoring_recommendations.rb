@@ -5,7 +5,7 @@ class CreateMonitoringRecommendations < ActiveRecord::Migration[5.2]
       t.string :category, null: false, default: 'performance'
       t.string :kind, null: false
       t.string :message, null: false
-      t.jsonb :details, null: false, default: {}
+      t.json :details, null: false
       t.string :controller_name
       t.string :action_name
       t.string :path

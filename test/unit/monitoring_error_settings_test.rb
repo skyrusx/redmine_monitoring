@@ -3,6 +3,10 @@
 require File.expand_path('../test_helper', __dir__)
 
 class MonitoringErrorSettingsTest < ActiveSupport::TestCase
+  setup do
+    require_redmine_application!('MonitoringError')
+  end
+
   test 'valid_formats keeps supported formats and normalizes case' do
     formats = MonitoringError.send(:valid_formats, %w[html json invalid])
 

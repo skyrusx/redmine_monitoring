@@ -2,10 +2,13 @@
 
 ## 0.1.5
 
-- Added a minimal Redmine plugin test suite for key regressions.
-- Added tests for monitoring format settings.
-- Added a Bullet integration availability smoke test.
-- Added a security report 404 regression test.
+- Added regression tests for plugin boot without Bullet, filters, retention, security reports, and notification dispatching.
+- Added a production-like Bullet integration smoke test.
+- Added migration compatibility checks for PostgreSQL/MySQL-sensitive constructs.
+- Replaced PostgreSQL-only `jsonb` migration columns with adapter-portable `json` columns.
+- Removed JSON column database defaults that are incompatible with MySQL.
+- Reworked security warning scopes to avoid PostgreSQL-only regex and JSON functions on MySQL.
+- Fixed metrics settings fallback lookup.
 - Removed local IDE/macOS artifacts from the working tree.
 
 ## 0.1.4

@@ -24,11 +24,11 @@ class CreateMonitoringSecurityIgnoredWarnings < ActiveRecord::Migration[5.2]
     table.integer :line
     table.string :link
     table.text :code
-    table.jsonb :render_path, default: []
-    table.jsonb :location, default: {}
+    table.json :render_path
+    table.json :location
     table.string :user_input
     table.string :confidence
-    table.jsonb :cwe_ids, default: []
+    table.json :cwe_ids
     table.text :note
   end
 

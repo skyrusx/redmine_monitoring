@@ -7,7 +7,7 @@ class CreateMonitoringSecurityErrors < ActiveRecord::Migration[5.2]
 
       t.text :error, null: false
       t.text :location
-      t.jsonb :backtrace, default: []
+      t.json :backtrace
 
       t.timestamps
     end

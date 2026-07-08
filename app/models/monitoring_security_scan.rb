@@ -10,6 +10,8 @@ class MonitoringSecurityScan < ApplicationRecord
 
   VALID_SOURCES = %w[brakeman].freeze
 
+  before_validation :assign_json_defaults
+
   validates :source, presence: true, inclusion: { in: VALID_SOURCES }
 
   def source_brakeman?
@@ -32,5 +34,13 @@ class MonitoringSecurityScan < ApplicationRecord
       html: html,
       target_scan: target_scan
     )
+  end
+
+  private
+
+  def assign_json_defaults
+    self.checks_performed = [] if checks_performed.nil?
+    self.scan_info = {} if scan_info.nil?
+    self.raw_json = {} if raw_json.nil?
   end
 end

@@ -16,5 +16,17 @@ module MonitoringRequestSettings
         value.to_i if value.to_i.positive?
       end
     end
+
+    private
+
+    def fetch_setting(key, fallback)
+      return fallback unless Setting.respond_to?(:plugin_redmine_monitoring)
+
+      value = Setting.plugin_redmine_monitoring[key]
+      processed = block_given? ? yield(value) : value.presence
+      processed || fallback
+    rescue StandardError
+      fallback
+    end
   end
 end

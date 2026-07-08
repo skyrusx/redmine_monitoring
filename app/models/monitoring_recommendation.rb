@@ -1,6 +1,8 @@
 class MonitoringRecommendation < ApplicationRecord
   belongs_to :user, optional: true
 
+  before_validation :assign_details_default
+
   validates :source, :category, :kind, :message, :fingerprint, presence: true
 
   scope :by_controller_name, ->(value) { where(controller_name: value) if value.present? }
@@ -34,5 +36,11 @@ class MonitoringRecommendation < ApplicationRecord
   def self.fingerprint_for(kind:, klass:, association:, path:, query: nil)
     raw = [kind, klass, association, path, query].compact.join('|')
     Digest::SHA1.hexdigest(raw)
+  end
+
+  private
+
+  def assign_details_default
+    self.details = {} if details.nil?
   end
 end

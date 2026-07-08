@@ -140,7 +140,13 @@
 
 ## Изменения 0.1.5
 
-- Добавлен минимальный test suite для ключевых регрессий.
+- Добавлены регрессионные тесты для загрузки без Bullet, фильтров, retention, security report и notification dispatcher.
+- Добавлен production-like smoke-тест для Bullet-интеграции.
+- Добавлены проверки PostgreSQL/MySQL-совместимости миграций.
+- Миграции переведены с PostgreSQL-only `jsonb` на переносимый `json`.
+- Убраны database defaults у JSON-колонок для совместимости с MySQL.
+- Security warning scopes переведены с PostgreSQL-only SQL на adapter-aware условия.
+- Исправлен fallback чтения settings для метрик.
 - Добавлен changelog.
 - Рабочая директория очищена от локального IDE/macOS мусора.
 

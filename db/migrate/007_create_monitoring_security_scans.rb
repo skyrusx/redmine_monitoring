@@ -25,9 +25,9 @@ class CreateMonitoringSecurityScans < ActiveRecord::Migration[5.2]
     table.integer :ignored_warnings_count, null: false, default: 0
     table.integer :errors_count, null: false, default: 0
     table.integer :obsolete_count, null: false, default: 0
-    table.jsonb :checks_performed, null: false, default: []
-    table.jsonb :scan_info, null: false, default: {}
-    table.jsonb :raw_json, null: false, default: {}
+    table.json :checks_performed, null: false
+    table.json :scan_info, null: false
+    table.json :raw_json, null: false
     table.text :raw_html
   end
 
