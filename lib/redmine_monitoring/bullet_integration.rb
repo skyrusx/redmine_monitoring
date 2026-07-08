@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'bullet'
-require 'uniform_notifier'
 require_relative 'bullet_integration/io_adapter'
 require_relative 'bullet_integration/notifier'
 
@@ -15,6 +13,8 @@ module RedmineMonitoring
 
     class << self
       def enable?
+        return false unless bullet_available?
+
         settings = Setting.plugin_redmine_monitoring || {}
         ActiveModel::Type::Boolean.new.cast(settings['dev_mode']) &&
           ActiveModel::Type::Boolean.new.cast(settings['enable_recommendations']) &&
@@ -35,6 +35,14 @@ module RedmineMonitoring
       end
 
       private
+
+      def bullet_available?
+        require 'bullet'
+        require 'uniform_notifier'
+        true
+      rescue LoadError
+        false
+      end
 
       def configure_bullet!
         Bullet.enable = true

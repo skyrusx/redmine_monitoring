@@ -20,7 +20,7 @@ module MonitoringErrorSettings
     end
 
     def enabled_formats
-      fetch_setting('enabled_formats', DEFAULT_SETTINGS[:enabled_formats]) { |value| valid_log_levels(value) }
+      fetch_setting('enabled_formats', DEFAULT_SETTINGS[:enabled_formats]) { |value| valid_formats(value) }
     end
 
     private
@@ -37,6 +37,12 @@ module MonitoringErrorSettings
 
     def valid_log_levels(value)
       (Array(value).map(&:to_s) & SEVERITIES).presence
+    end
+
+    def valid_formats(value)
+      normalized_formats = ENABLED_FORMATS.map(&:upcase)
+
+      (Array(value).map { |format| format.to_s.upcase } & normalized_formats).presence
     end
   end
 end

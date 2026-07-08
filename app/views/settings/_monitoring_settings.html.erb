@@ -118,7 +118,7 @@
         <%= label_tag 'settings_notify_email_recipients', l("settings.fields.label_notify_email_recipients") %>
         <%
           options = User.active.where(admin: true).order(:id).map do |user|
-            ["#{user.name} (#{user.mail})", user.mail] if user.mail.include?("mosreg.ru")
+            ["#{user.name} (#{user.mail})", user.mail] if user.mail.present?
           end.compact.uniq
         %>
         <%= select_tag 'settings[notify_email_recipients]',
