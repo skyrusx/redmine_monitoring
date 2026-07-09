@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'monitoring_security_scan_retention'
+
 class MonitoringSecurityScan < ApplicationRecord
   has_many :monitoring_security_warnings, dependent: :destroy
   has_many :monitoring_security_ignored_warnings, dependent: :destroy
@@ -11,6 +13,7 @@ class MonitoringSecurityScan < ApplicationRecord
   VALID_SOURCES = %w[brakeman].freeze
 
   before_validation :assign_json_defaults
+  include MonitoringSecurityScanRetention
 
   validates :source, presence: true, inclusion: { in: VALID_SOURCES }
 

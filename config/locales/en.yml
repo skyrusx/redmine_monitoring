@@ -9,6 +9,7 @@ en:
       recommendations: "Recommendations"
       alerts: "Notifications"
       security: "Security"
+      data_security: "Data security"
 
     fields:
       label_enabled: "Enable monitoring"
@@ -28,6 +29,15 @@ en:
       label_metrics_max_records_hint: "Limit the table size; older records will be removed."
       label_metrics_retention_days: "Retention (days)"
       label_metrics_retention_days_hint: "Delete metrics older than the specified number of days."
+      label_mask_sensitive_data: "Mask sensitive data"
+      label_sensitive_keys: "Sensitive keys"
+      label_sensitive_keys_hint: "Comma or whitespace separated list. Matching is done by key name substring."
+      label_capture_headers: "Store request headers"
+      label_capture_env: "Store environment"
+      label_params_max_bytes: "Params limit (bytes)"
+      label_headers_max_bytes: "Headers limit (bytes)"
+      label_env_max_bytes: "Env limit (bytes)"
+      label_backtrace_max_bytes: "Backtrace limit (bytes)"
       label_notify_enabled: "Enable notifications"
       label_notify_channels: "Channels"
       label_notify_severity_min: "Minimum severity level"
@@ -41,8 +51,12 @@ en:
       label_security_enabled: "Enable Brakeman integration"
       label_security_allow_manual_scan: "Allow manual scan"
       label_security_keep_html: "Keep HTML report"
+      label_security_retention_days: "Security scan retention (days)"
+      label_security_retention_days_hint: "Delete scan results older than the specified number of days."
       label_enable_recommendations: "Enable recommendations"
       label_enable_bullet_recommendations: "Enable Bullet integration"
+      label_recommendations_retention_days: "Recommendations retention (days)"
+      label_recommendations_retention_days_hint: "Delete recommendations older than the specified number of days."
 
   notices:
     test_error: "Test error created successfully"

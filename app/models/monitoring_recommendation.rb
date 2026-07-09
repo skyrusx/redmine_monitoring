@@ -1,7 +1,10 @@
+require_dependency 'monitoring_recommendation_retention'
+
 class MonitoringRecommendation < ApplicationRecord
   belongs_to :user, optional: true
 
   before_validation :assign_details_default
+  include MonitoringRecommendationRetention
 
   validates :source, :category, :kind, :message, :fingerprint, presence: true
 

@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
+require 'securerandom'
 require File.expand_path('../test_helper', __dir__)
 
 class MonitoringRetentionTest < ActiveSupport::TestCase
   setup do
-    require_redmine_application!('MonitoringError', 'MonitoringRequest')
+    require_redmine_application!('MonitoringError', 'MonitoringRequest',
+                                 'MonitoringRecommendation', 'MonitoringSecurityScan')
 
     MonitoringError.delete_all
     MonitoringRequest.delete_all
+    MonitoringRecommendation.delete_all
+    MonitoringSecurityScan.delete_all
   end
 
   test 'error retention removes old records' do
@@ -46,6 +50,30 @@ class MonitoringRetentionTest < ActiveSupport::TestCase
     assert MonitoringRequest.exists?(fresh.id)
   end
 
+  test 'recommendation retention removes old records' do
+    old = create_recommendation(created_at: 3.days.ago, updated_at: 3.days.ago)
+    fresh = create_recommendation(created_at: Time.current, updated_at: Time.current)
+
+    MonitoringRecommendation.stub(:retention_days, 1) do
+      MonitoringRecommendation.enforce_retention
+    end
+
+    refute MonitoringRecommendation.exists?(old.id)
+    assert MonitoringRecommendation.exists?(fresh.id)
+  end
+
+  test 'security scan retention removes old records' do
+    old = create_security_scan(created_at: 3.days.ago, updated_at: 3.days.ago)
+    fresh = create_security_scan(created_at: Time.current, updated_at: Time.current)
+
+    MonitoringSecurityScan.stub(:retention_days, 1) do
+      MonitoringSecurityScan.enforce_retention
+    end
+
+    refute MonitoringSecurityScan.exists?(old.id)
+    assert MonitoringSecurityScan.exists?(fresh.id)
+  end
+
   private
 
   def create_error(attributes)
@@ -67,6 +95,22 @@ class MonitoringRetentionTest < ActiveSupport::TestCase
       status_code: 200,
       duration_ms: 10,
       format: 'html'
+    }.merge(attributes))
+  end
+
+  def create_recommendation(attributes)
+    MonitoringRecommendation.create!({
+      source: 'bullet',
+      category: 'performance',
+      kind: 'n_plus_one_query',
+      message: 'Use includes',
+      fingerprint: SecureRandom.hex(20)
+    }.merge(attributes))
+  end
+
+  def create_security_scan(attributes)
+    MonitoringSecurityScan.create!({
+      source: 'brakeman'
     }.merge(attributes))
   end
 end

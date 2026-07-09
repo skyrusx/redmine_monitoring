@@ -1,6 +1,6 @@
 # Redmine Monitoring
 
-Текущая версия: `0.1.5`
+Текущая версия: `0.2.0`
 
 Плагин для Redmine, который перехватывает все ошибки приложения (включая HTTP-ошибки), метрики запросов и рекомендации
 по оптимизации (Bullet), сохраняет их в базу и предоставляет удобный интерфейс для просмотра.
@@ -62,7 +62,8 @@
 - **Настройки плагина**:
     - включение/выключение мониторинга;
     - режим разработки (включает Bullet-интеграцию и тестовые кнопки);
-    - ограничения хранения ошибок и метрик;
+    - ограничения хранения ошибок, метрик, рекомендаций и security scan;
+    - маскирование и лимиты сохраняемых данных;
     - каналы уведомлений;
     - настройки security scan.
 
@@ -118,13 +119,23 @@
 - `enabled` — включить/выключить мониторинг (по умолчанию `true`).
 - `dev_mode` — режим разработки (по умолчанию `false`).
 - `max_errors` — максимальное количество ошибок, хранимых в базе (старые автоматически удаляются).
-- `retention_days` — срок хранения ошибок и метрик в днях.
+- `retention_days` — срок хранения ошибок в днях.
 - `log_levels` — уровни логирования, которые будут сохраняться (например: `error`, `warning` и т. д.).
 - `enabled_formats` — список форматов, для которых включён мониторинг (`html`, `json`, `xml` и т. д.).
 - `enable_metrics` — включение сбора метрик запросов.
 - `slow_request_threshold_ms` — порог (в миллисекундах) для пометки запроса как «медленного».
 - `metrics_max_records` — максимальное количество записей метрик.
 - `metrics_retention_days` — срок хранения метрик.
+- `recommendations_retention_days` — срок хранения рекомендаций.
+- `security_retention_days` — срок хранения результатов security scan.
+- `mask_sensitive_data` — маскировать чувствительные значения в params и headers.
+- `sensitive_keys` — список ключей для маскирования (`password`, `token`, `authorization`, `cookie`, `secret`, `api_key`).
+- `capture_headers` — сохранять или не сохранять request headers.
+- `capture_env` — сохранять или не сохранять окружение записи.
+- `params_max_bytes` — максимальный размер сохраняемых params.
+- `headers_max_bytes` — максимальный размер сохраняемых headers.
+- `env_max_bytes` — максимальный размер сохраняемого env.
+- `backtrace_max_bytes` — максимальный размер сохраняемого backtrace.
 - `notify_enabled` — включение уведомлений.
 - `notify_channels` — каналы уведомлений (`email`, `telegram`).
 - `notify_severity_min` — минимальный уровень ошибки для уведомлений.
@@ -137,6 +148,28 @@
 - `security_keep_html` — хранение HTML-отчёта Brakeman.
 
 ---
+
+## Данные и аудит
+
+Плагин сохраняет технические данные, необходимые для диагностики: класс и сообщение ошибки, backtrace,
+controller/action, HTTP-статус, формат, пользователя, IP, User-Agent, Referer, params, выбранные headers,
+Rails environment, request metrics, Bullet-рекомендации, алерты и результаты Brakeman security scan.
+
+Для снижения риска утечки секретов включено маскирование sensitive keys. По умолчанию маскируются ключи,
+содержащие `password`, `token`, `authorization`, `cookie`, `secret`, `api_key`. Значение заменяется на
+`[FILTERED]`. Размеры `params`, `headers`, `env` и `backtrace` ограничиваются настройками. Headers и env
+можно полностью отключить в настройках плагина.
+
+---
+
+## Изменения 0.2.0
+
+- Добавлено маскирование sensitive data в params и headers.
+- Добавлены лимиты размера для params, headers, env и backtrace.
+- Добавлены настройки хранения/не хранения headers и env.
+- Добавлен раздельный retention для errors, metrics, recommendations и security scan.
+- `security_keep_html` теперь применяется при импорте Brakeman-отчёта.
+- Добавлено audit-friendly описание сохраняемых данных.
 
 ## Изменения 0.1.5
 

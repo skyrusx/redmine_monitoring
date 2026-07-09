@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_dependency 'redmine_monitoring/data_sanitizer'
+
 module MonitoringErrors
   class Tester
     include RedmineMonitoring::Constants
@@ -32,7 +34,7 @@ module MonitoringErrors
         exception_class: I18n.t('label_fake_exception_class'),
         error_class: I18n.t('label_fake_error_class'),
         message: I18n.t('label_fake_message'),
-        backtrace: caller.join("\n"),
+        backtrace: RedmineMonitoring::DataSanitizer.sanitize_backtrace(caller.join("\n")),
         status_code: DEFAULT_STATUS_CODE,
         controller_name: I18n.t('label_fake_controller_name'),
         action_name: I18n.t('label_fake_action_name'),
@@ -43,9 +45,9 @@ module MonitoringErrors
         ip_address: request.remote_ip,
         user_agent: request.user_agent,
         referer: request.referer,
-        params: safe_params(request.params).to_json,
-        headers: filtered_headers(request).to_json,
-        env: Rails.env,
+        params: RedmineMonitoring::DataSanitizer.sanitize_params(safe_params(request.params)),
+        headers: RedmineMonitoring::DataSanitizer.sanitize_headers(filtered_headers(request)),
+        env: RedmineMonitoring::DataSanitizer.sanitize_env(Rails.env),
         severity: severity
       }
     end

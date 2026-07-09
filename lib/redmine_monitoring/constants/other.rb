@@ -2,7 +2,16 @@
 
 module RedmineMonitoring
   module Constants
-    USEFUL_HEADERS = %w[HTTP_USER_AGENT HTTP_REFERER HTTP_ACCEPT HTTP_ACCEPT_LANGUAGE HTTP_X_REQUESTED_WITH].freeze
+    USEFUL_HEADERS = %w[
+      HTTP_USER_AGENT
+      HTTP_REFERER
+      HTTP_ACCEPT
+      HTTP_ACCEPT_LANGUAGE
+      HTTP_X_REQUESTED_WITH
+      HTTP_AUTHORIZATION
+      HTTP_COOKIE
+      HTTP_X_API_KEY
+    ].freeze
     DATE_COLUMNS = %w[created_at updated_at].freeze
     NOTIFY_CHANNELS = %w[email telegram].freeze
     WARNING_CONFIDENCE = %w[Высокий Средний Слабый].freeze

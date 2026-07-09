@@ -34,7 +34,7 @@ module RedmineMonitoring
             checks_performed: extract_checks_performed(scan_info, scan_data),
             scan_info: scan_info,
             raw_json: scan_data,
-            raw_html: html
+            raw_html: keep_html? ? html : nil
           }
         end
 
@@ -44,6 +44,15 @@ module RedmineMonitoring
 
         def extract_checks_performed(scan_info, scan_data)
           scan_info['checks_performed'] || scan_data['checks_performed'] || []
+        end
+
+        def keep_html?
+          settings = Setting.plugin_redmine_monitoring || {}
+          default = RedmineMonitoring::Constants::DEFAULT_SETTINGS[:security_keep_html]
+          value = settings.key?('security_keep_html') ? settings['security_keep_html'] : default
+          ActiveModel::Type::Boolean.new.cast(value)
+        rescue StandardError
+          true
         end
 
         def reset_scan_results(scan)

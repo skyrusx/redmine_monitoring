@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'data_sanitizer'
+
 module RedmineMonitoring
   class ErrorAttributesBuilder
     include Constants
@@ -15,7 +17,7 @@ module RedmineMonitoring
     def build
       (exception ? exception_attributes : http_error_attributes)
         .merge(request_context_attributes)
-        .merge(env: Rails.env, severity: severity)
+        .merge(env: RedmineMonitoring::DataSanitizer.sanitize_env(Rails.env), severity: severity)
     end
 
     private
@@ -30,7 +32,7 @@ module RedmineMonitoring
         exception_class: exception.class.to_s,
         error_class: exception.class.to_s,
         message: exception.message.to_s,
-        backtrace: Array(exception.backtrace).join("\n"),
+        backtrace: RedmineMonitoring::DataSanitizer.sanitize_backtrace(Array(exception.backtrace).join("\n")),
         status_code: 500,
         file: file,
         line: line
@@ -60,8 +62,8 @@ module RedmineMonitoring
         ip_address: request.remote_ip,
         user_agent: request.user_agent,
         referer: request.referer,
-        params: safe_params(request.params).to_json,
-        headers: filtered_headers(request).to_json
+        params: RedmineMonitoring::DataSanitizer.sanitize_params(safe_params(request.params)),
+        headers: RedmineMonitoring::DataSanitizer.sanitize_headers(filtered_headers(request))
       }
     end
 

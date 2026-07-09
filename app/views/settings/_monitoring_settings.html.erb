@@ -17,6 +17,44 @@
     </p>
 
     <fieldset>
+      <legend><b><%= l('settings.subtitles.data_security') %></b></legend>
+
+      <p>
+        <%= label_tag 'settings_mask_sensitive_data', l("settings.fields.label_mask_sensitive_data") %>
+        <%= check_box_tag 'settings[mask_sensitive_data]', true, @settings[:mask_sensitive_data] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_sensitive_keys', l("settings.fields.label_sensitive_keys") %>
+        <%= text_field_tag 'settings[sensitive_keys]', Array(@settings[:sensitive_keys]).join(', '), size: 83 %>
+        <em class="info"><%= l("settings.fields.label_sensitive_keys_hint") %></em>
+      </p>
+      <p>
+        <%= label_tag 'settings_capture_headers', l("settings.fields.label_capture_headers") %>
+        <%= check_box_tag 'settings[capture_headers]', true, @settings[:capture_headers] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_capture_env', l("settings.fields.label_capture_env") %>
+        <%= check_box_tag 'settings[capture_env]', true, @settings[:capture_env] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_params_max_bytes', l("settings.fields.label_params_max_bytes") %>
+        <%= number_field_tag 'settings[params_max_bytes]', @settings[:params_max_bytes] || 65_536, min: 0, step: 1024 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_headers_max_bytes', l("settings.fields.label_headers_max_bytes") %>
+        <%= number_field_tag 'settings[headers_max_bytes]', @settings[:headers_max_bytes] || 32_768, min: 0, step: 1024 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_env_max_bytes', l("settings.fields.label_env_max_bytes") %>
+        <%= number_field_tag 'settings[env_max_bytes]', @settings[:env_max_bytes] || 255, min: 0, step: 64 %>
+      </p>
+      <p>
+        <%= label_tag 'settings_backtrace_max_bytes', l("settings.fields.label_backtrace_max_bytes") %>
+        <%= number_field_tag 'settings[backtrace_max_bytes]', @settings[:backtrace_max_bytes] || 131_072, min: 0, step: 4096 %>
+      </p>
+    </fieldset>
+
+    <fieldset>
       <legend><b><%= l('settings.subtitles.metrics') %></b></legend>
 
       <p>
@@ -81,6 +119,11 @@
       <p>
         <%= label_tag 'settings_enable_bullet_recommendations', l("settings.fields.label_enable_bullet_recommendations") %>
         <%= check_box_tag 'settings[enable_bullet_recommendations]', true, @settings[:enable_bullet_recommendations] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_recommendations_retention_days', l("settings.fields.label_recommendations_retention_days") %>
+        <%= number_field_tag 'settings[recommendations_retention_days]', @settings[:recommendations_retention_days] || 90, min: 1, step: 1 %>
+        <em class="info"><%= l("settings.fields.label_recommendations_retention_days_hint") %></em>
       </p>
     </fieldset>
 
@@ -163,6 +206,11 @@
       <p>
         <%= label_tag 'settings_security_keep_html', l("settings.fields.label_security_keep_html") %>
         <%= check_box_tag 'settings[security_keep_html]', true, @settings[:security_keep_html] %>
+      </p>
+      <p>
+        <%= label_tag 'settings_security_retention_days', l("settings.fields.label_security_retention_days") %>
+        <%= number_field_tag 'settings[security_retention_days]', @settings[:security_retention_days] || 180, min: 1, step: 1 %>
+        <em class="info"><%= l("settings.fields.label_security_retention_days_hint") %></em>
       </p>
     </fieldset>
   </fieldset>

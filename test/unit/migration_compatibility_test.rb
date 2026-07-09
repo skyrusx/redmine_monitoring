@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require File.expand_path('../test_helper', __dir__)
+require File.expand_path('../../lib/redmine_monitoring/constants', __dir__)
 
 class MigrationCompatibilityTest < ActiveSupport::TestCase
   MIGRATION_FILES = Dir[File.expand_path('../../db/migrate/*.rb', __dir__)].freeze
@@ -17,6 +18,16 @@ class MigrationCompatibilityTest < ActiveSupport::TestCase
     end
 
     assert_empty offenders
+  end
+
+  test 'monitoring settings include data security defaults' do
+    defaults = RedmineMonitoring::Constants::DEFAULT_SETTINGS
+
+    assert defaults[:mask_sensitive_data]
+    assert_includes defaults[:sensitive_keys], 'password'
+    assert_includes defaults[:sensitive_keys], 'api_key'
+    assert_operator defaults[:params_max_bytes], :>, 0
+    assert_operator defaults[:backtrace_max_bytes], :>, 0
   end
 
   test 'security warning scopes use adapter-aware SQL for database-specific operations' do

@@ -9,6 +9,7 @@ ru:
       recommendations: "Рекомендации"
       alerts: "Уведомления"
       security: "Безопасность"
+      data_security: "Безопасность данных"
 
     fields:
       label_enabled: "Включить мониторинг"
@@ -28,6 +29,15 @@ ru:
       label_metrics_max_records_hint: "Ограничение размера таблицы, старые записи будут удаляться."
       label_metrics_retention_days: "Срок хранения (дней)"
       label_metrics_retention_days_hint: "Удаление метрик старше указанного количества дней."
+      label_mask_sensitive_data: "Маскировать чувствительные данные"
+      label_sensitive_keys: "Ключи для маскирования"
+      label_sensitive_keys_hint: "Список через запятую или пробел. Совпадение проверяется по вхождению в имя ключа."
+      label_capture_headers: "Сохранять заголовки запроса"
+      label_capture_env: "Сохранять окружение"
+      label_params_max_bytes: "Лимит params (байт)"
+      label_headers_max_bytes: "Лимит headers (байт)"
+      label_env_max_bytes: "Лимит env (байт)"
+      label_backtrace_max_bytes: "Лимит backtrace (байт)"
       label_notify_enabled: "Включить уведомления"
       label_notify_channels: "Каналы"
       label_notify_severity_min: "Минимальный порог уровня"
@@ -41,8 +51,12 @@ ru:
       label_security_enabled: "Включить интеграцию с Brakeman"
       label_security_allow_manual_scan: "Разрешить ручной запуск сканирования"
       label_security_keep_html: "Сохранять HTML-отчёт"
+      label_security_retention_days: "Срок хранения security scan (дней)"
+      label_security_retention_days_hint: "Удаление результатов сканирования старше указанного количества дней."
       label_enable_recommendations: "Включить рекомендации"
       label_enable_bullet_recommendations: "Включить интеграцию с Bullet"
+      label_recommendations_retention_days: "Срок хранения рекомендаций (дней)"
+      label_recommendations_retention_days_hint: "Удаление рекомендаций старше указанного количества дней."
 
   notices:
     test_error: "Тестовая ошибка успешно создана"
