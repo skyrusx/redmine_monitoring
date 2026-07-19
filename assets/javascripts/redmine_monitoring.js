@@ -13,12 +13,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return el.closest('[data-accordion-scope]') || el.closest('table') || document;
     }
 
+    function cssEscape(value) {
+        if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
+        return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+    }
+
     function findDetails(trigger) {
         // 1) если задан data-target — ищем внутри scope, а не глобально
         const id = trigger.getAttribute('data-target');
         if (id) {
             const scope = levelScope(trigger);
-            const byId = scope.querySelector('#' + CSS.escape(id));
+            const byId = scope.querySelector('#' + cssEscape(id));
             if (byId && byId.classList.contains('details-row')) return byId;
         }
         // 2) fallback — соседняя строка .details-row
@@ -66,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const targetId = btn.getAttribute('data-target');
         const scope = btn.closest('[data-accordion-scope]') || btn.closest('table') || document;
-        const codeBlock = targetId && scope.querySelector('#' + CSS.escape(targetId));
+        const codeBlock = targetId && scope.querySelector('#' + cssEscape(targetId));
         if (!codeBlock) return;
 
         navigator.clipboard.writeText(codeBlock.innerText).then(function () {
@@ -79,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    if (window.$) {
+    if (window.$ && $.fn.select2) {
         $('.monitoring-select2').select2({
             width: '100%',
             allowClear: true,

@@ -8,7 +8,7 @@ require_dependency 'monitoring_error_fingerprint'
 require_dependency 'monitoring_error_retention'
 require_dependency 'monitoring_error_notifications'
 
-class MonitoringError < ApplicationRecord
+class MonitoringError < ActiveRecord::Base
   include RedmineMonitoring::Constants
 
   belongs_to :user, optional: true

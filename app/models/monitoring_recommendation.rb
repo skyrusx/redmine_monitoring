@@ -1,6 +1,6 @@
 require_dependency 'monitoring_recommendation_retention'
 
-class MonitoringRecommendation < ApplicationRecord
+class MonitoringRecommendation < ActiveRecord::Base
   belongs_to :user, optional: true
 
   before_validation :assign_details_default

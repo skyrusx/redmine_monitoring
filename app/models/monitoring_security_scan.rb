@@ -2,7 +2,7 @@
 
 require_dependency 'monitoring_security_scan_retention'
 
-class MonitoringSecurityScan < ApplicationRecord
+class MonitoringSecurityScan < ActiveRecord::Base
   has_many :monitoring_security_warnings, dependent: :destroy
   has_many :monitoring_security_ignored_warnings, dependent: :destroy
   has_many :monitoring_security_errors, dependent: :destroy

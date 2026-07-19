@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RedmineMonitoring
-  class MonitoringNotifyJob < ApplicationJob
+  class MonitoringNotifyJob < ActiveJob::Base
     queue_as :default
 
     def perform(error_id)

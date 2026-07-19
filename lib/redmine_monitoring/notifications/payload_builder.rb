@@ -14,8 +14,8 @@ module RedmineMonitoring
                     "#{@error.controller_name}##{@error.action_name}",
           severity: @error.severity, status: @error.status_code, format: @error.format,
           snippet: @error.message.to_s.truncate(300),
-          backtrace: @error.backtrace.split("\n"),
-          backtrace_limit: Setting.plugin_redmine_monitoring['notify_include_backtrace_lines'].to_i,
+          backtrace: @error.backtrace.to_s.split("\n"),
+          backtrace_limit: (Setting.plugin_redmine_monitoring || {})['notify_include_backtrace_lines'].to_i,
           url: Rails.application.routes.url_helpers.monitoring_errors_path
         }
       end

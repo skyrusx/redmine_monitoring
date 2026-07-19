@@ -1,4 +1,4 @@
-class MonitoringAlert < ApplicationRecord
+class MonitoringAlert < ActiveRecord::Base
   has_many :monitoring_alert_channels, dependent: :destroy
   alias channels monitoring_alert_channels
 

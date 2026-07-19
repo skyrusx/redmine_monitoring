@@ -20,7 +20,7 @@ class SecurityWarningsAddWarningIdAndDropUniqueFingerprint < ActiveRecord::Migra
     add_index :monitoring_security_ignored_warnings, :warning_id
 
     add_index :monitoring_security_warnings,
-              %i[monitoring_security_scan_idwarning_id],
+              %i[monitoring_security_scan_id warning_id],
               name: 'idx_msw_scan_warning_id'
 
     add_index :monitoring_security_ignored_warnings,

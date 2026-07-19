@@ -5,7 +5,7 @@ require_dependency 'monitoring_request_settings'
 require_dependency 'monitoring_request_normalize'
 require_dependency 'monitoring_request_retention'
 
-class MonitoringRequest < ApplicationRecord
+class MonitoringRequest < ActiveRecord::Base
   belongs_to :user, optional: true
 
   include MonitoringRequestScopes

@@ -18,11 +18,17 @@ module MonitoringErrors
     private
 
     def load_errors_by_day
-      @errors_by_day = MonitoringError.group_by_day(:created_at, last: DEFAULT_COUNT_DAYS).count
+      @errors_by_day = MonitoringError.where('created_at >= ?', DEFAULT_COUNT_DAYS.days.ago)
+                                      .group(Arel.sql('DATE(created_at)'))
+                                      .order(Arel.sql('DATE(created_at)'))
+                                      .count
     end
 
     def load_avg_duration
-      @avg_duration = MonitoringRequest.group_by_day(:created_at, last: DEFAULT_COUNT_DAYS).average(:duration_ms)
+      @avg_duration = MonitoringRequest.where('created_at >= ?', DEFAULT_COUNT_DAYS.days.ago)
+                                       .group(Arel.sql('DATE(created_at)'))
+                                       .order(Arel.sql('DATE(created_at)'))
+                                       .average(:duration_ms)
     end
 
     def load_top_urls

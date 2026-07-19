@@ -1,3 +1,5 @@
 $(document).ready(function() {
-    $('.monitoring-select2').select2();
+    if ($.fn.select2) {
+        $('.monitoring-select2').select2();
+    }
 });

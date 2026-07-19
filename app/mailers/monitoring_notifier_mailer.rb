@@ -1,4 +1,4 @@
-class MonitoringNotifierMailer < ApplicationMailer
+class MonitoringNotifierMailer < ActionMailer::Base
   default from: 'redmine@monitoring.com'
 
   def alert(payload, recipients)

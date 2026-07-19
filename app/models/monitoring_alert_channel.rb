@@ -1,4 +1,4 @@
-class MonitoringAlertChannel < ApplicationRecord
+class MonitoringAlertChannel < ActiveRecord::Base
   STATUSES = %w[new processing delivered failed].freeze
 
   belongs_to :monitoring_alert

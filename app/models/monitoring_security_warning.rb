@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MonitoringSecurityWarning < ApplicationRecord
+class MonitoringSecurityWarning < ActiveRecord::Base
   belongs_to :monitoring_security_scan
 
   validates :warning_type, :fingerprint, :check_name, :message, :file, presence: true
