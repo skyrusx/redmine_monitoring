@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
+require_dependency 'monitoring_errors/health_status'
+
 module MonitoringErrors
   class Dashboard
     include RedmineMonitoring::Constants
 
     attr_reader :errors_by_day, :avg_duration, :top_urls, :top_users,
-                :kpi_5xx, :kpi_4xx, :kpi_slow, :kpi_avg_ms
+                :kpi_5xx, :kpi_4xx, :kpi_slow, :kpi_avg_ms, :health
 
     def initialize
+      load_health
       load_errors_by_day
       load_avg_duration
       load_top_urls
@@ -16,6 +19,10 @@ module MonitoringErrors
     end
 
     private
+
+    def load_health
+      @health = MonitoringErrors::HealthStatus.new
+    end
 
     def load_errors_by_day
       @errors_by_day = MonitoringError.where('created_at >= ?', DEFAULT_COUNT_DAYS.days.ago)

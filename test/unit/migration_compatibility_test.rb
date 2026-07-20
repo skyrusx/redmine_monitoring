@@ -30,6 +30,14 @@ class MigrationCompatibilityTest < ActiveSupport::TestCase
     assert_operator defaults[:backtrace_max_bytes], :>, 0
   end
 
+  test 'dashboard includes health status block' do
+    dashboard = File.read(File.expand_path('../../app/views/monitoring_errors/dashboard/_tab_content.html.erb', __dir__))
+
+    assert_includes dashboard, '@dashboard.health'
+    assert_includes dashboard, 'label_health_status'
+    assert_includes dashboard, 'label_health_notifications'
+  end
+
   test 'security warning scopes use adapter-aware SQL for database-specific operations' do
     source = File.read(File.expand_path('../../app/models/monitoring_security_warning.rb', __dir__))
 

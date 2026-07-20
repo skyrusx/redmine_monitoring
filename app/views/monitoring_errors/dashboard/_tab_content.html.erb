@@ -7,6 +7,91 @@
 <div id="mm-tab-dashboard" class="mm-tabpanel">
   <div class="mm-hint"><%= l(:label_dashboard_hint) %></div>
 
+  <% health = @dashboard.health %>
+  <div class="mm-health">
+    <div class="mm-health-section">
+      <h4 class="mm-chart-title"><%= l(:label_health_status) %></h4>
+      <div class="mm-health-grid">
+        <% health.settings_status.each do |key, enabled| %>
+          <div class="mm-health-item">
+            <span><%= l("label_health_#{key}") %></span>
+            <span class="mm-badge <%= enabled ? 'mm-badge__active' : 'mm-badge__not_active' %>"></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mm-health-section">
+      <h4 class="mm-chart-title"><%= l(:label_health_counts) %></h4>
+      <div class="mm-health-grid">
+        <% health.counts.each do |key, count| %>
+          <div class="mm-health-item">
+            <span><%= l("label_health_count_#{key}") %></span>
+            <strong><%= count %></strong>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mm-health-section">
+      <h4 class="mm-chart-title"><%= l(:label_health_latest) %></h4>
+      <table class="mm-table mm-health-table">
+        <tbody>
+          <% health.latest.each do |key, record| %>
+            <tr>
+              <td><%= l("label_health_latest_#{key}") %></td>
+              <td>
+                <% if record %>
+                  <%= format_time(record.created_at) if record.respond_to?(:created_at) %>
+                <% else %>
+                  <span class="mm-muted"><%= l(:label_health_no_data) %></span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mm-health-section">
+      <h4 class="mm-chart-title"><%= l(:label_health_notifications) %></h4>
+      <table class="mm-table mm-health-table">
+        <tbody>
+          <tr>
+            <td><%= l(:label_health_active_channels) %></td>
+            <td><%= health.notifications[:active_channels].presence&.join(', ') || l(:label_health_no_data) %></td>
+          </tr>
+          <tr>
+            <td><%= l(:label_health_email_configured) %></td>
+            <td>
+              <span class="mm-badge <%= health.notifications[:email_configured] ? 'mm-badge__active' : 'mm-badge__not_active' %>"></span>
+              <%= health.notifications[:email_recipients_count] %>
+            </td>
+          </tr>
+          <tr>
+            <td><%= l(:label_health_telegram_configured) %></td>
+            <td>
+              <span class="mm-badge <%= health.notifications[:telegram_configured] ? 'mm-badge__active' : 'mm-badge__not_active' %>"></span>
+              <%= health.notifications[:telegram_chat_ids_count] %>
+            </td>
+          </tr>
+          <tr>
+            <td><%= l(:label_health_last_delivery_status) %></td>
+            <td><%= health.notifications[:last_status].presence || l(:label_health_no_data) %></td>
+          </tr>
+          <tr>
+            <td><%= l(:label_health_last_delivery_error) %></td>
+            <td><%= health.notifications[:last_error].presence || '-' %></td>
+          </tr>
+          <tr>
+            <td><%= l(:label_health_last_sent_at) %></td>
+            <td><%= health.notifications[:last_sent_at] ? format_time(health.notifications[:last_sent_at]) : l(:label_health_no_data) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="mm-kpis">
     <div class="mm-kpi">
       <div class="mm-kpi-value"><%= @dashboard.kpi_5xx %></div>

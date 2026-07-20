@@ -11,7 +11,7 @@ Redmine::Plugin.register :redmine_monitoring do
   name 'Redmine Monitoring plugin'
   author 'Ruslan Fedotov'
   description 'Error, performance, alerting and security monitoring for Redmine'
-  version '0.2.1'
+  version '0.2.2'
   requires_redmine version_or_higher: '4.2.0'
   url 'https://github.com/skyrusx/redmine_monitoring'
   author_url 'https://github.com/skyrusx/'

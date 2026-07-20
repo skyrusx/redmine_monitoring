@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.2
+
+- Added `MonitoringErrors::HealthStatus`.
+- Added dashboard health/status block.
+- Added table counts and latest record status for monitoring entities.
+- Added email/Telegram notification diagnostics.
+- Updated README with operational health information.
+
+## 0.2.1
+
+- Adapted the plugin for Redmine 4.2.
+
 ## 0.2.0
 
 - Added sensitive data masking for params and headers.
