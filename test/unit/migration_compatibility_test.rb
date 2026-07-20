@@ -38,6 +38,19 @@ class MigrationCompatibilityTest < ActiveSupport::TestCase
     assert_includes dashboard, 'label_health_notifications'
   end
 
+  test 'cleanup rake tasks expose expected targets and options' do
+    rake_task = File.read(File.expand_path('../../lib/tasks/monitoring_cleanup.rake', __dir__))
+
+    assert_includes rake_task, 'task errors: :environment'
+    assert_includes rake_task, 'task metrics: :environment'
+    assert_includes rake_task, 'task recommendations: :environment'
+    assert_includes rake_task, 'task security: :environment'
+    assert_includes rake_task, 'task all: :environment'
+    assert_includes rake_task, "ENV['DRY_RUN']"
+    assert_includes rake_task, "ENV['DAYS']"
+    assert_includes rake_task, "ENV['BATCH']"
+  end
+
   test 'security warning scopes use adapter-aware SQL for database-specific operations' do
     source = File.read(File.expand_path('../../app/models/monitoring_security_warning.rb', __dir__))
 

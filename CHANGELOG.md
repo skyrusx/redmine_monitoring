@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3
+
+- Added `MonitoringErrors::Cleanup`.
+- Added cleanup rake tasks for errors, metrics, recommendations, security scans, and all targets.
+- Added `DRY_RUN`, `DAYS`, `BATCH`, and `VERBOSE` task options.
+- Added batch deletion with matched/deleted/cutoff terminal output.
+- Updated README with cleanup commands and a cron example.
+
 ## 0.2.2
 
 - Added `MonitoringErrors::HealthStatus`.
