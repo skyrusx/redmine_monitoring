@@ -22,7 +22,7 @@ module RedmineMonitoring
             ch_rec.succeed!
           rescue StandardError => e
             ch_rec.fail!(e.message)
-            Rails.logger.error "[Monitoring][notify][#{channel}] #{e.class}: #{e.message}"
+            RedmineMonitoring::OperationalLogger.error("notification delivery failed channel=#{channel} #{e.class}: #{e.message}")
           end
         end
       end

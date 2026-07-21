@@ -27,7 +27,7 @@ module RedmineMonitoring
 
         create_recommendation(attrs)
       rescue StandardError => e
-        Rails.logger.warn "[Monitoring/Bullet] ingest failed: #{e.class}: #{e.message}"
+        RedmineMonitoring::OperationalLogger.warn("Bullet ingest failed: #{e.class}: #{e.message}")
       end
 
       def create_recommendation(attrs)

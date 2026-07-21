@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.4
+
+- Added `RedmineMonitoring::OperationalLogger`.
+- Added startup and attach logs for middleware, request subscriber, and Bullet integration.
+- Added logs for disabled monitoring, metrics, Bullet, and notifications branches.
+- Added notification misconfiguration and delivery failure logs.
+- Added Brakeman mode and security HTML storage logs.
+- Added once-only logging for frequent diagnostic branches.
+- Routed operational and middleware/error reporter logs to `log/redmine_monitoring.log`.
+
 ## 0.2.3
 
 - Added `MonitoringErrors::Cleanup`.

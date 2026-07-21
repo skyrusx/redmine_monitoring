@@ -51,6 +51,21 @@ class MigrationCompatibilityTest < ActiveSupport::TestCase
     assert_includes rake_task, "ENV['BATCH']"
   end
 
+  test 'operational logging is wired into key runtime paths' do
+    files = %w[
+      init.rb
+      lib/redmine_monitoring/request_subscriber.rb
+      lib/redmine_monitoring/bullet_integration.rb
+      lib/redmine_monitoring/notifications/dispatcher.rb
+      lib/redmine_monitoring/security/brakeman_ingest.rb
+    ]
+
+    files.each do |relative_path|
+      source = File.read(File.expand_path("../../#{relative_path}", __dir__))
+      assert_includes source, 'OperationalLogger', "#{relative_path} should use OperationalLogger"
+    end
+  end
+
   test 'security warning scopes use adapter-aware SQL for database-specific operations' do
     source = File.read(File.expand_path('../../app/models/monitoring_security_warning.rb', __dir__))
 

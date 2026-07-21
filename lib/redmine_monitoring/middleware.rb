@@ -45,7 +45,7 @@ module RedmineMonitoring
     end
 
     def monitoring_logger
-      @monitoring_logger ||= Logger.new('log/monitoring.log')
+      @monitoring_logger ||= RedmineMonitoring::OperationalLogger.logger
     end
 
     def reporter

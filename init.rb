@@ -1,5 +1,6 @@
 require_relative 'lib/redmine_monitoring/env'
 require_relative 'lib/redmine_monitoring/constants'
+require_relative 'lib/redmine_monitoring/operational_logger'
 require_relative 'lib/redmine_monitoring/request_subscriber'
 require_relative 'lib/redmine_monitoring/bullet_integration'
 
@@ -11,7 +12,7 @@ Redmine::Plugin.register :redmine_monitoring do
   name 'Redmine Monitoring plugin'
   author 'Ruslan Fedotov'
   description 'Error, performance, alerting and security monitoring for Redmine'
-  version '0.2.3'
+  version '0.2.4'
   requires_redmine version_or_higher: '4.2.0'
   url 'https://github.com/skyrusx/redmine_monitoring'
   author_url 'https://github.com/skyrusx/'
@@ -20,6 +21,7 @@ Redmine::Plugin.register :redmine_monitoring do
 end
 
 Rails.application.config.middleware.use RedmineMonitoring::Middleware
+RedmineMonitoring::OperationalLogger.info('middleware attached')
 
 RedmineMonitoring::RequestSubscriber.attach!
 RedmineMonitoring::BulletIntegration.attach!

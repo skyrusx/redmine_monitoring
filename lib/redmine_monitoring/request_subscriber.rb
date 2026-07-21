@@ -6,10 +6,15 @@ module RedmineMonitoring
     ASSET_PREFIXES = %w[/assets /packs /favicon.ico /robots.txt].freeze
 
     def self.attach!
-      return if @attached
+      if @attached
+        RedmineMonitoring::OperationalLogger.once(:request_subscriber_already_attached,
+                                                  message: 'request subscriber already attached')
+        return
+      end
 
       ActiveSupport::Notifications.subscribe(EVENT) { |*args| instance.call(*args) }
       @attached = true
+      RedmineMonitoring::OperationalLogger.info('request subscriber attached')
     end
 
     def self.instance
@@ -40,7 +45,7 @@ module RedmineMonitoring
         }
       )
     rescue StandardError => e
-      Rails.logger.warn "[Monitoring] RequestSubscriber failed: #{e.class}: #{e.message}"
+      RedmineMonitoring::OperationalLogger.warn("RequestSubscriber failed: #{e.class}: #{e.message}")
     end
 
     private
@@ -68,8 +73,16 @@ module RedmineMonitoring
 
     def metrics_enabled?
       settings = plugin_settings
-      settings['enable_metrics'] || settings[:enable_metrics]
+      enabled = settings['enable_metrics'] || settings[:enable_metrics]
+      unless enabled
+        RedmineMonitoring::OperationalLogger.once(:metrics_disabled,
+                                                  message: 'metrics collection disabled by settings')
+      end
+      enabled
     rescue StandardError
+      RedmineMonitoring::OperationalLogger.once(:metrics_settings_unavailable,
+                                                level: :warn,
+                                                message: 'metrics settings unavailable')
       false
     end
 

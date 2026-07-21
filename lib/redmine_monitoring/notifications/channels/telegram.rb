@@ -10,6 +10,11 @@ module RedmineMonitoring
         class << self
           def deliver(payload)
             token, chats = fetch_credentials
+            if token.blank? || chats.blank?
+              RedmineMonitoring::OperationalLogger.once(:telegram_credentials_missing,
+                                                        level: :warn,
+                                                        message: 'telegram channel skipped: token or chat ids missing')
+            end
             return if token.blank? || chats.blank?
 
             text = build_text(payload)
@@ -45,7 +50,7 @@ module RedmineMonitoring
             uri = URI("https://api.telegram.org/bot#{token}/sendMessage")
             Net::HTTP.post_form(uri, { chat_id: chat_id, text: text })
           rescue StandardError => e
-            Rails.logger.error "[Monitoring][telegram] #{e.class}: #{e.message}"
+            RedmineMonitoring::OperationalLogger.error("telegram delivery failed #{e.class}: #{e.message}")
           end
         end
       end

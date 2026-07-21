@@ -11,6 +11,7 @@ module RedmineMonitoring
       def self.call!(**opts)
         params = default_params.merge(opts)
         mode = select_mode(params[:prefer])
+        RedmineMonitoring::OperationalLogger.info("security scan selected mode=#{mode}")
 
         case mode
         when :api then run_api_or_fallback(params)
@@ -74,6 +75,7 @@ module RedmineMonitoring
         rescue LoadError, NameError => e
           raise e unless params[:fallback_to_cli]
 
+          RedmineMonitoring::OperationalLogger.warn("Brakeman API unavailable, falling back to CLI: #{e.class}: #{e.message}")
           run_cli(params)
         end
 
@@ -85,8 +87,12 @@ module RedmineMonitoring
         end
 
         def mode_auto(params)
-          return run_api_or_fallback(params) if api_supported?
+          if api_supported?
+            RedmineMonitoring::OperationalLogger.info('Brakeman auto mode using API')
+            return run_api_or_fallback(params)
+          end
 
+          RedmineMonitoring::OperationalLogger.info('Brakeman auto mode using CLI')
           run_cli(params)
         end
 

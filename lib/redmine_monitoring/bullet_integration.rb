@@ -13,25 +13,43 @@ module RedmineMonitoring
 
     class << self
       def enable?
-        return false unless bullet_available?
+        unless bullet_available?
+          RedmineMonitoring::OperationalLogger.once(:bullet_unavailable,
+                                                    level: :warn,
+                                                    message: 'Bullet gem unavailable')
+          return false
+        end
 
         settings = Setting.plugin_redmine_monitoring || {}
-        ActiveModel::Type::Boolean.new.cast(settings['dev_mode']) &&
-          ActiveModel::Type::Boolean.new.cast(settings['enable_recommendations']) &&
-          ActiveModel::Type::Boolean.new.cast(settings['enable_bullet_recommendations'])
+        enabled = ActiveModel::Type::Boolean.new.cast(settings['dev_mode']) &&
+                  ActiveModel::Type::Boolean.new.cast(settings['enable_recommendations']) &&
+                  ActiveModel::Type::Boolean.new.cast(settings['enable_bullet_recommendations'])
+        unless enabled
+          RedmineMonitoring::OperationalLogger.once(:bullet_disabled,
+                                                    message: 'Bullet integration disabled by settings')
+        end
+        enabled
       rescue StandardError
+        RedmineMonitoring::OperationalLogger.once(:bullet_settings_unavailable,
+                                                  level: :warn,
+                                                  message: 'Bullet settings unavailable')
         false
       end
 
       def attach!
         return unless enable?
-        return if @attached
+        if @attached
+          RedmineMonitoring::OperationalLogger.once(:bullet_already_attached,
+                                                    message: 'Bullet integration already attached')
+          return
+        end
 
         configure_bullet!
         install_custom_notifier!
         install_notifications!
 
         @attached = true
+        RedmineMonitoring::OperationalLogger.info('Bullet integration attached')
       end
 
       private

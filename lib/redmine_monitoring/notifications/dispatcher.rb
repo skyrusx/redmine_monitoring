@@ -7,7 +7,13 @@ module RedmineMonitoring
 
       def call(error_id)
         settings = fetch_settings
-        return unless notifications_enabled?(settings)
+        unless notifications_enabled?(settings)
+          RedmineMonitoring::OperationalLogger.once(:notifications_disabled,
+                                                    message: 'notifications disabled by settings')
+          return
+        end
+
+        log_channel_diagnostics(settings)
 
         error = MonitoringError.find(error_id)
         return unless allowed?(error, settings)
@@ -24,7 +30,7 @@ module RedmineMonitoring
         Deliverer.new(alert_window, error, settings).deliver!
         manager.mark_notified!(alert: alert_window)
       rescue StandardError => e
-        Rails.logger.error "[Monitoring][notify] #{e.class}: #{e.message}"
+        RedmineMonitoring::OperationalLogger.error("notification dispatcher failed: #{e.class}: #{e.message}")
       end
 
       private
@@ -47,6 +53,41 @@ module RedmineMonitoring
 
       def delivery_channels(settings)
         Array(settings['notify_channels']).map(&:to_s)
+      end
+
+      def log_channel_diagnostics(settings)
+        channels = delivery_channels(settings)
+        if channels.empty?
+          RedmineMonitoring::OperationalLogger.once(:notifications_no_channels,
+                                                    level: :warn,
+                                                    message: 'notifications enabled but no channels configured')
+        end
+
+        log_email_diagnostics(settings, channels)
+        log_telegram_diagnostics(settings, channels)
+      end
+
+      def log_email_diagnostics(settings, channels)
+        return unless channels.include?('email')
+
+        recipients = settings['notify_email_recipients'].to_s.split(/[\s,]+/).reject(&:blank?)
+        return if recipients.any?
+
+        RedmineMonitoring::OperationalLogger.once(:notifications_email_missing_recipients,
+                                                  level: :warn,
+                                                  message: 'email notifications enabled but recipients missing')
+      end
+
+      def log_telegram_diagnostics(settings, channels)
+        return unless channels.include?('telegram')
+
+        token = settings['notify_telegram_bot_token'].to_s
+        chats = settings['notify_telegram_chat_ids'].to_s.split(/[\s,]+/).reject(&:blank?)
+        return if token.present? && chats.any?
+
+        RedmineMonitoring::OperationalLogger.once(:notifications_telegram_incomplete,
+                                                  level: :warn,
+                                                  message: 'telegram notifications enabled but token or chat ids missing')
       end
 
       def suppressed?(alert_window, settings)
@@ -89,7 +130,7 @@ module RedmineMonitoring
         return false unless per_minute_limit.positive?
 
         if throttled_per_minute?(fingerprint, per_minute_limit)
-          Rails.logger.info "[Monitoring][notify] throttled per-minute for fingerprint=#{fingerprint}"
+          RedmineMonitoring::OperationalLogger.info("notification throttled per-minute fingerprint=#{fingerprint}")
           true
         else
           false
@@ -101,7 +142,7 @@ module RedmineMonitoring
         current_count = cache_increment(cache_key, expires_in: 90) # ~1 минута с запасом
         current_count > per_minute_limit
       rescue StandardError => e
-        Rails.logger.warn "[Monitoring][notify] throttle-cache failed: #{e.class} #{e.message}"
+        RedmineMonitoring::OperationalLogger.warn("notification throttle cache failed: #{e.class} #{e.message}")
         false
       end
 

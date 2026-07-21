@@ -21,7 +21,7 @@ module MonitoringErrorNotifications
       RedmineMonitoring::Notifications::Dispatcher.new.call(id)
     end
   rescue StandardError => e
-    Rails.logger.error "[Monitoring][notify] enqueue failed for error_id=#{id}: #{e.class} #{e.message}"
+    RedmineMonitoring::OperationalLogger.error("notification enqueue failed error_id=#{id}: #{e.class} #{e.message}")
   end
 
   def notify_enabled?

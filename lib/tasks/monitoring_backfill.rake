@@ -30,7 +30,7 @@ module MonitoringBackfill
       batch.each do |err|
         updated_count += 1 if process_record(err, dry_run)
       rescue StandardError => e
-        Rails.logger.warn "[Monitoring] backfill_errors: #{e.class}: #{e.message} (id=#{err.id})"
+        RedmineMonitoring::OperationalLogger.warn("backfill_errors failed #{e.class}: #{e.message} id=#{err.id}")
       ensure
         bar.increment!
       end

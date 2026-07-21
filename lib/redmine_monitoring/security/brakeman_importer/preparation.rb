@@ -50,7 +50,12 @@ module RedmineMonitoring
           settings = Setting.plugin_redmine_monitoring || {}
           default = RedmineMonitoring::Constants::DEFAULT_SETTINGS[:security_keep_html]
           value = settings.key?('security_keep_html') ? settings['security_keep_html'] : default
-          ActiveModel::Type::Boolean.new.cast(value)
+          enabled = ActiveModel::Type::Boolean.new.cast(value)
+          unless enabled
+            RedmineMonitoring::OperationalLogger.once(:security_html_storage_disabled,
+                                                      message: 'security HTML report storage disabled by settings')
+          end
+          enabled
         rescue StandardError
           true
         end

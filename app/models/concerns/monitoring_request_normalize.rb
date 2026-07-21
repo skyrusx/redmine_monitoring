@@ -32,7 +32,7 @@ module MonitoringRequestNormalize
 
       spec.presence
     rescue StandardError => e
-      Rails.logger.debug { "[Monitoring] normalize_path_via_router failed: #{e.class}: #{e.message}" }
+      RedmineMonitoring::OperationalLogger.debug { "normalize_path_via_router failed: #{e.class}: #{e.message}" }
       nil
     end
   end

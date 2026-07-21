@@ -77,10 +77,16 @@ class MonitoringErrorsController < ApplicationController
   end
 
   def security_scan
-    return render_404 unless monitoring_dev_mode?
+    unless monitoring_dev_mode?
+      RedmineMonitoring::OperationalLogger.once(:security_manual_scan_blocked,
+                                                level: :warn,
+                                                message: 'manual security scan blocked outside development mode')
+      return render_404
+    end
 
     # режим: :auto / :api / :cli
     scan_mode = (Setting.plugin_redmine_monitoring['security_scan_mode'] || 'auto').to_s.downcase.to_sym
+    RedmineMonitoring::OperationalLogger.info("manual security scan started mode=#{scan_mode}")
 
     # опции для API Brakeman (пример: { min_confidence: 1, ignore_file: 'config/brakeman.ignore' })
     api_options = {}
@@ -88,11 +94,15 @@ class MonitoringErrorsController < ApplicationController
     # флаги для CLI Brakeman (пример: ['-w', '1', '-i', 'config/brakeman.ignore'])
     cli_flags = []
 
-    RedmineMonitoring::Security::BrakemanIngest.call!(
+    result = RedmineMonitoring::Security::BrakemanIngest.call!(
       prefer: scan_mode,
       options: api_options,
       extra_args: cli_flags,
       output_html: true
+    )
+    scan = result[:scan]
+    RedmineMonitoring::OperationalLogger.info(
+      "manual security scan finished mode=#{result[:mode]} warnings=#{scan&.warnings_count} errors=#{scan&.errors_count}"
     )
 
     redirect_to monitoring_errors_path(tab: params[:tab]), notice: I18n.t('notices.security_scan')
@@ -110,6 +120,8 @@ class MonitoringErrorsController < ApplicationController
   def check_monitoring_enabled
     return if Setting.plugin_redmine_monitoring['enabled']
 
+    RedmineMonitoring::OperationalLogger.once(:monitoring_disabled,
+                                              message: 'monitoring disabled by settings')
     redirect_to home_path, notice: I18n.t('notices.check_monitoring_enabled')
   end
 
